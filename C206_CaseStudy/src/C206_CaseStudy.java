@@ -28,15 +28,17 @@ public class C206_CaseStudy {
     		int userChoice = Helper.readInt("Enter an option > ");
     		if (userChoice == 1) // view
     		{
-    			
+    			viewAllUsers(userList);
     		}
     		else if (userChoice == 2) // add
     		{
-    			
+    			User newUser = inputUser();
+    			addUser(userList, newUser);
     		}
     		else if (userChoice == 3) // delete
     		{
-    			
+    			C206_CaseStudy.setHeader("DELETE USER");
+    			C206_CaseStudy.deleteUser(userList);
     		}
     		
     	}
@@ -205,14 +207,14 @@ public class C206_CaseStudy {
 		String password = Helper.readString("Enter Password >> ");
 		String role = Helper.readString("Enter Role >> ");
 
-		User u5 = new User(name, email, password, role);
-		return u5;
+		User newUser = new User(name, email, password, role);
+		return newUser;
 	}
-	public static void addUser(ArrayList<User> userList, User u5)
+	public static void addUser(ArrayList<User> userList, User newUser)
 	{
-		userList.add(u5);
+		userList.add(newUser);
 		System.out.println("User added.");
-	}
+	
 	//====================================================================== VIEW ALL USERS =================================================================================
 	public static String retrieveAllUsers(ArrayList<User> userList)
 	{
