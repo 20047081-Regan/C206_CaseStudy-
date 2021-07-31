@@ -23,6 +23,14 @@ public class C206_CaseStudyTest {
 		bid1 = new Bid(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90);
 		bid2 = new Bid(2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com",10.80);
 		bidList = new ArrayList<Bid>();
+		//=================================================================== @Before ---> USER =========================================================================
+		u1 = new User("John Lim", "johnlim@C206.com", "12345", "Buyer");
+		u2 = new User("James Tan", "jamestan@C206.com", "67890", "Buyer");
+		u3 = new User("Susan Chan", "susanchan@C206.com", "54321", "Seller");
+		u4 = new User("Joan Lee", "joanlee@C206.com", "09876", "Admin");
+		
+		userList = new ArrayList<User>();
+		//===============================================================================================================================================================
 	}
 
 	@Test
@@ -91,6 +99,72 @@ public class C206_CaseStudyTest {
 		// Test that a successful message will be displayed after deleting successfully.
 		// Test that the bid will be removed from the bid list.
 	}
+	//------------------------------------------------------------------------- A.Elizabeth 20020036 ------------------------------------------------------------------------
+	//============================================================================ @Test ---> USER ==========================================================================
+	@Test
+	public void testAddUser()
+	{
+		// userList is not null, so that can add a new user
+		assertNotNull("Test if there is a valid userList arrayList to add to", userList);
+		
+		// Given an empty list, after adding 1 user, is the size of the list 1?
+		C206_CaseStudy.addUser(userList, u1);
+		assertEquals("Test if User arrayList size is 1?", 1, userList.size());
+		
+		// Is the user just added the same as the first user of the list?
+		assertSame("Test if user added is the same as 1st user of the list?", u1, userList.get(0));
+		
+		// Add more users and test if the size of userList is 5?
+		C206_CaseStudy.addUser(userList, u2);
+		C206_CaseStudy.addUser(userList, u3);
+		C206_CaseStudy.addUser(userList, u4);
+		assertEquals("Test if User arrayList size is 4.", 4, userList.size());
+	}
+	
+	@Test
+	public void testRetrieveAllUsers()
+	{
+		// Test if the userList is not null but empty, so that new user can be added.
+		assertNotNull("Test if there is valid User arrayList to add to", userList);
+		
+		// Test if the list of users retrieved from the CaseStudy is empty
+		String allUsers = C206_CaseStudy.retrieveAllUsers(userList);
+		String testOutput = "";
+		assertEquals("Check that ViewAllUsers", testOutput, allUsers);
+		
+		// Given an empty list, after adding 4 items, test if the size of the list is 4
+		C206_CaseStudy.addUser(userList, u1);
+		C206_CaseStudy.addUser(userList, u2);
+		C206_CaseStudy.addUser(userList, u3);
+		C206_CaseStudy.addUser(userList, u4);
+		assertEquals("Test if that User arrayList size is 4?", 4, userList.size());
+		
+		// Test if the expected out put string is same as the list of users retrieved from the CaseStudy
+		allUsers = C206_CaseStudy.retrieveAllUsers(userList);
+		
+		testOutput = String.format("%-10s %-20s %-10s\n", "John Lim", "johnlim@C206.com", "Buyer");
+		testOutput += String.format("%-10s %-20s %-10s\n", "James Tan", "jamestan@C206.com", "Buyer");
+		testOutput += String.format("%-10s %-20s %-10s\n", "Susan Chan", "susanchan@C206.com", "Seller");
+		testOutput += String.format("%-10s %-20s %-10s\n", "Joan Lee", "joanlee@C206.com", "Admin");
+
+		assertEquals("Check ViewAllUsers", testOutput, allUsers);	 
+	}
+	
+	@Test
+	public void testDoDeleteUser()
+	{
+		assertNotNull("Test that the userList is not null", userList);
+		
+		C206_CaseStudy.addUser(userList, u1);
+		C206_CaseStudy.addUser(userList, u2);
+		
+		assertEquals("Test that userList size is 2", 2, userList.size());
+		
+		assertTrue(userList.get(0).equals(u1));
+		C206_CaseStudy.doDeleteUser(userList, "johnlim@C206.com");
+		assertFalse(userList.get(0).equals(u1));
+	}
+	//=======================================================================================================================================================================
 
 	@After
 	public void tearDown() throws Exception {
