@@ -54,6 +54,8 @@ public class C206_CaseStudy {
 		System.out.println(header);
 		Helper.line(80, "-");
 	}
+	
+	//========================================================================= BID METHODS ========================================================================================
 
 	// VIEW
 	public static String retrieveAllBid(ArrayList<Bid> bidList) {
