@@ -10,8 +10,17 @@ public class C206_CaseStudyTest {
 
 	private Bid bid1;
 	private Bid bid2;
+	private category cat1;
+	private category cat2;
+	private User u1;
+	private User u2;
+	private User u3;
+	private User u4;
+
 
 	private ArrayList<Bid> bidList;
+	private ArrayList<category> CategoryList;
+	private ArrayList<User> userList;
 
 	public C206_CaseStudyTest() {
 		super();
@@ -31,6 +40,11 @@ public class C206_CaseStudyTest {
 		
 		userList = new ArrayList<User>();
 		//===============================================================================================================================================================
+		CategoryList = new ArrayList<category>();
+		cat1 = new category("Sports","Football with the league");
+		cat2 = new category("Baking","cakes with shakes");
+		
+
 	}
 
 	@Test
@@ -165,6 +179,86 @@ public class C206_CaseStudyTest {
 		assertFalse(userList.get(0).equals(u1));
 	}
 	//=======================================================================================================================================================================
+	@Test 
+	public void testAddCategory() {
+		
+		//check if category list is not null but empty and can be added to 
+		assertNotNull("Check if there is a valid Category arraylist to add to ", CategoryList);
+		
+		// Given an empty list, after adding 1 new category, is the size of the list 1?
+		C206_CaseStudy.AddCategory(CategoryList, cat1);
+		assertEquals("Test if category arrayList size is 1?", 1, CategoryList.size());
+		
+		// check if the object matches the added object index in the arraylist
+		assertSame("Check that category 1 is added", cat1, CategoryList.get(0));
+		
+	    
+	    //test that fields are not null for name and item
+	    assertNotNull(cat1.getName());
+	    assertNotNull(cat1.getItem());
+	    
+	    // Given an empty list, after adding 1 more  new category, is the size of the list 2?
+	    C206_CaseStudy.AddCategory(CategoryList, cat2);
+		assertEquals("Test if category arraylist size is 2", 2, CategoryList.size());
+		assertSame("Test that Category 2 is added", cat2, CategoryList.get(1));
+		
+		// test that error message is submitted if empty fields is submitted
+	}
+		
+	@Test
+	public void testRetrieveAllCategory() 
+	{
+		// Test if categorylist is not null but empty -boundary
+		assertNotNull("Test if there is valid category arraylist to retrieve item", CategoryList);
+				
+		//test if the list of category retrieved from the case study file is empty - boundary
+		String allCategories= C206_CaseStudy.retrieveAllCategory(CategoryList);
+		String testOutput = "";
+		assertEquals("Check that category arraylist ", testOutput, allCategories);
+				
+		//Given an empty list, after adding 2 items, test if the size of the list is 2 - normal
+	    C206_CaseStudy.AddCategory(CategoryList, cat1);
+	    C206_CaseStudy.AddCategory(CategoryList, cat2);
+		assertEquals("Test that Camcorder arraylist size is 2", 2, CategoryList.size());
+				
+		//test if the expected output string same as the list of category retrieved from the case study file
+		allCategories = C206_CaseStudy.retrieveAllCategory(CategoryList);
+		testOutput = String.format("%-10s %-20s \n","Sports","Football with the league");
+		testOutput += String.format("%-10s %-20s \n","Baking","cakes with shakes");
+		
+		// check if the objects aded inside are similar to the objects in test output
+		assertEquals("Check the objects inside the category list", testOutput, allCategories);
+		
+	}
+
+	@Test
+	public void testDeleteCategory() {
+		
+		// check that there is a list of 
+        assertNotNull("Test that the CategoryList is not null and there are things to delete", CategoryList);
+        
+		C206_CaseStudy.AddCategory(CategoryList, cat1);
+		C206_CaseStudy.AddCategory(CategoryList, cat2);
+		
+		// test that list size is 2 after adding - normal
+		assertEquals("Test that CategoryList size is 2", 2, CategoryList.size());
+		
+		//test that fields are not null  for name and type
+	    assertNotNull(cat1.getName());
+	    assertNotNull(cat1.getItem());
+	  
+	    // before deletion , check if its index 0 is indeed cat 1
+	    assertTrue(CategoryList.get(0).equals(cat1));
+	    // delete the cat1
+		C206_CaseStudy.deleteCategory(CategoryList,cat1.getName());
+		// after deletion , check cat 1 has been deleted
+		assertFalse(CategoryList.get(0).equals(cat1));
+		
+		// check after deleting cat 1 , arraylist will have only cat 2 left inside
+		assertEquals("Test that CategoryList size is 1", 1, CategoryList.size());
+		
+	}
+
 
 	@After
 	public void tearDown() throws Exception {

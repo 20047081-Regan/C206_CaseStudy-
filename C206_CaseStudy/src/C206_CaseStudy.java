@@ -11,7 +11,13 @@ public class C206_CaseStudy {
 		userList.add(new User("James Tan", "jamestan@C206.com", "67890", "Buyer"));
 		userList.add(new User("Susan Chan", "susanchan@C206.com", "54321", "Seller"));
 		userList.add(new User("Joan Lee", "joanlee@C206.com", "09876", "Admin"));
-		//---------------------------------------------------------------------------------------------------------------------------------------------------------------
+		//----------------------------------------------------------------------------------------------------------------------------------------------------------
+		// category dummy data
+		ArrayList<category> CategoryList = new ArrayList<category>();
+		CategoryList.add(new category("Sports","Football Singapore"));
+		CategoryList.add(new category("Cooking","Gordan Ramsey"));
+		//----------------------------------------------------------------------------------------------------------------------------------------------------------
+		
 		
     // template
     int option = 0;
@@ -49,14 +55,40 @@ public class C206_CaseStudy {
     		
     		if(categoryChoice == 1)
     		{
+    			Helper.line(30, "-");
+    			System.out.println("CATEGORY LIST");
+    			Helper.line(30, "-");
+    			
+    			viewAllcategories(CategoryList);
+    		
     			
     		}
     		else if (categoryChoice == 2)
     		{
+    			Helper.line(30, "-");
+    			System.out.println("ADD CATEGORY");
+    			Helper.line(30, "-");
+    			
+    			category newCat = inputCategory();// store inside object 
+    			
+    			AddCategory(CategoryList, newCat);
+    			
+
     			
     		}
     		else if (categoryChoice == 3)
     		{
+    			Helper.line(30, "-");
+    			System.out.println("DELETE CATEGORY");
+    			Helper.line(30, "-");
+    			
+    			viewAllcategories(CategoryList);
+    			
+    			String name = Helper.readString("Enter a category name > ");
+    			
+    			deleteCategory(CategoryList,name);
+    			
+
     			
     		}
     	}
@@ -214,7 +246,7 @@ public class C206_CaseStudy {
 	{
 		userList.add(newUser);
 		System.out.println("User added.");
-	
+	}
 	//====================================================================== VIEW ALL USERS =================================================================================
 	public static String retrieveAllUsers(ArrayList<User> userList)
 	{
@@ -295,6 +327,89 @@ public class C206_CaseStudy {
 		return output;
 	}
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+	// ZANE TAN (CATEGORY)
+	public static category inputCategory() // input category function
+	{
+		
+		String Name = Helper.readString("Enter Name of category (no numbers or special characters) >> ");
+		String Item = Helper.readString("Enter Item Name(no numbers or special characters) >> ");
+		
+	    category newCat = new category(Name,Item);
+
+		return newCat;
+	}
+	public static void AddCategory(ArrayList<category> CategoryList , category newCat) 
+	{
+	
+		if(newCat.getName().isEmpty() || newCat.getItem().isEmpty())
+		{
+			System.out.println("Please enter all fields that are required");
+		}
+		else
+		{
+			CategoryList.add(newCat);
+			System.out.println("Category Name ( " + newCat.getName() + " ) is added.");
+			System.out.println("Category Item ( " + newCat.getItem() + " ) is added.");	
+		}
+		
+	}
+	public static void viewAllcategories(ArrayList<category> CategoryList) {
+		
+		String output = String.format("%-10s %-20s \n", "NAME", "ITEM NAME");
+		
+		output += retrieveAllCategory(CategoryList);
+		
+		System.out.println(output);
+	}
+	
+	public static String retrieveAllCategory(ArrayList<category> CategoryList) {
+		String output = "";
+		
+		for(int i = 0; i < CategoryList.size();i++)
+		{
+			if(CategoryList.size() != 0)
+			{
+				output += String.format("%-10s %-20s \n", CategoryList.get(i).getName(),
+						CategoryList.get(i).getItem());
+			}
+			else
+			{
+				System.out.println("There are no categories in the list");
+			}
+		}
+		return output;
+		
+	}
+	public static void deleteCategory(ArrayList<category> CategoryList, String name)
+	{
+		boolean isDeleted = false;
+		
+		if(name.isEmpty())
+		{
+			System.out.println("field is empty");
+		}
+		else 
+		{
+			for(int i = 0; i < CategoryList.size(); i++)
+			{
+				if(CategoryList.get(i).getName().equalsIgnoreCase(name))
+				{
+					System.out.println("Category (" + name + ") has been deleted !");
+					CategoryList.remove(i);
+					isDeleted = true;
+					break;
+				}
+					
+			}
+			
+		}
+		if(isDeleted == false)
+		{
+			System.out.println("There is no such category name");
+		}
+	}
+		
+
 }
 
 
