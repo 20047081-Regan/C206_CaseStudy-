@@ -18,6 +18,10 @@ public class C206_CaseStudy {
 		CategoryList.add(new category("Cooking","Gordan Ramsey"));
 		//----------------------------------------------------------------------------------------------------------------------------------------------------------
 		
+		// BID
+		ArrayList<Bid> bidList = new ArrayList<Bid>();
+		bidList.add(new Bid(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90));
+		bidList.add(new Bid(2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com", 10.80));
 		
     // template
     int option = 0;
