@@ -117,15 +117,20 @@ public class C206_CaseStudy {
     		
     		if(bidChoice == 1)
     		{
-    			
+    		// View all bid
+		C206_CaseStudy.viewAllBids(bidList);
     		}
     		else if(bidChoice == 2)
     		{
-    			
+    		// Add a new bid
+		Bid newBid = inputBid(bidList);
+		C206_CaseStudy.addNewBid(bidList, newBid);
     		}
     		else if(bidChoice == 3)
     		{
-    			
+    		// Delete bid
+		int BidID = removeBid(bidList);
+		C206_CaseStudy.deleteMyBid(bidList, BidID);
     		}
     	}
     	else if (option == 5)
@@ -408,8 +413,104 @@ public class C206_CaseStudy {
 			System.out.println("There is no such category name");
 		}
 	}
-		
+	
+	// ========================================================================= BID REGAN =====================================================================
+	// VIEW
+	public static String retrieveAllBid(ArrayList<Bid> bidList) {
+		String output = "";
 
+		for (int i = 0; i < bidList.size(); i++) {
+			output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
+		}
+		return output;
+	}
+	public static void viewAllBids(ArrayList<Bid> bidList) {
+		C206_CaseStudy.setHeader("VIEW ALL BIDS");
+		String output = "";
+		if (bidList.isEmpty()) {
+			output = "You have no existing bids at the moment.";
+		}
+		else {
+			output = String.format("%-10s %-25s %-20s %-20s %-10s\n", "BID ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "BID PRICE");
+			output += retrieveAllBid(bidList);
+		}
+		System.out.println(output);
+	}
+
+	// ADD
+	public static Bid inputBid(ArrayList<Bid> bidList) {
+		C206_CaseStudy.setHeader("ADD BID");
+		int bidID = bidList.size() + 1;
+		String itemName = Helper.readString("Enter Item Name > ");
+		while (itemName.isEmpty()) {
+			Bid.emptyFields();
+			itemName = Helper.readString("Enter Item Name > ");
+		}
+		String sellerEmail = Helper.readString("Enter Seller Email > ");
+		while (sellerEmail.isEmpty()) {
+			Bid.emptyFields();
+			sellerEmail = Helper.readString("Enter Seller Email > ");
+		}
+		String buyerEmail = Helper.readString("Enter Buyer Email > ");
+		while (buyerEmail.isEmpty()) {
+			Bid.emptyFields();
+			buyerEmail = Helper.readString("Enter Buyer Email > ");
+		}
+		double price = Helper.readDouble("Enter Item Price > ");
+		while (price == 0) {
+			Bid.emptyFields();
+			price = Helper.readDouble("Enter Item Price > ");
+		}
+		// create object
+		Bid newBid = new Bid(bidID, itemName, sellerEmail, buyerEmail, price);
+		return newBid;
+	}
+	public static void addNewBid(ArrayList<Bid> bidList, Bid newBid) {
+		// add object into arrayList.
+		bidList.add(newBid);
+		System.out.println("Congratulations! You have successfully bid the item!");
+	}
+
+	// DELETE
+	public static int removeBid(ArrayList<Bid> bidList) {
+		C206_CaseStudy.setHeader("DELETE MY BID");
+		int bidID = Helper.readInt("Enter Bid ID > ");
+		return bidID;
+	}
+
+	public static String deleteMyBid(ArrayList<Bid> bidList, int BidID) {
+		boolean found = false;
+		String output = "";
+		for (int i = 0; i < bidList.size(); i ++) {
+			if (BidID == bidList.get(i).getBidID()) {
+				int index = i + 1;
+				char confirm = Helper.readChar("Are you sure that you want to delete Bid ID " + index + "? (Y/N) > ");
+				if (confirm == 'Y' || confirm == 'y') {
+					bidList.remove(i);
+					output = "You have successfully deleted Bid ID " + index;
+					System.out.println(output);
+					//bidList.get(i).setDeleted(true);
+				}
+				else if (confirm == 'N' || confirm == 'n') {
+					output = "You have cancelled the delete transaction for Bid ID " + index;
+					System.out.println(output);
+					//bidList.get(i).setDeleted(false);
+				}
+				else {
+					output = "Please enter valid values.";
+					System.out.println(output);
+					//bidList.get(i).setDeleted(false);
+				}
+				found = true;
+			}
+		}
+
+		if (found != true) {
+			output = String.format("Bid ID %d is not found.", BidID);
+			System.out.println(output);
+		}
+		return output;
+	}	
 }
 
 
