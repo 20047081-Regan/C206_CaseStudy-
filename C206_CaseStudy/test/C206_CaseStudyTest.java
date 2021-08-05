@@ -165,7 +165,7 @@ public class C206_CaseStudyTest {
 	}
 	
 	@Test
-	public void testDoDeleteUser()
+	public void testDeleteUser()
 	{
 		assertNotNull("Test that the userList is not null", userList);
 		
@@ -175,7 +175,7 @@ public class C206_CaseStudyTest {
 		assertEquals("Test that userList size is 2", 2, userList.size());
 		
 		assertTrue(userList.get(0).equals(u1));
-		C206_CaseStudy.doDeleteUser(userList, "johnlim@C206.com");
+		C206_CaseStudy.deleteUser(userList, "johnlim@C206.com");
 		assertFalse(userList.get(0).equals(u1));
 	}
 	//=======================================================================================================================================================================
