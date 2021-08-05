@@ -16,11 +16,17 @@ public class C206_CaseStudyTest {
 	private User u2;
 	private User u3;
 	private User u4;
-
+	private Deal deal1;
+	private Deal deal2;
+	private Item item1;
+	private Item item2;
+	
 
 	private ArrayList<Bid> bidList;
 	private ArrayList<category> CategoryList;
 	private ArrayList<User> userList;
+	private ArrayList<Deal> dealList;
+	private ArrayList<Item> itemList;
 
 	public C206_CaseStudyTest() {
 		super();
@@ -29,21 +35,28 @@ public class C206_CaseStudyTest {
 	@Before
 	public void setUp() throws Exception {
 		// prepare test data
+		//==============================================================BID============================================================
+		bidList = new ArrayList<Bid>();
 		bid1 = new Bid(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90);
 		bid2 = new Bid(2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com",10.80);
-		bidList = new ArrayList<Bid>();
-		//=================================================================== @Before ---> USER =========================================================================
+		//==============================================================USER===========================================================
+		userList = new ArrayList<User>();
 		u1 = new User("John Lim", "johnlim@C206.com", "12345", "Buyer");
 		u2 = new User("James Tan", "jamestan@C206.com", "67890", "Buyer");
 		u3 = new User("Susan Chan", "susanchan@C206.com", "54321", "Seller");
 		u4 = new User("Joan Lee", "joanlee@C206.com", "09876", "Admin");
-		
-		userList = new ArrayList<User>();
-		//===============================================================================================================================================================
+		//=============================================================CATEGORY========================================================
 		CategoryList = new ArrayList<category>();
 		cat1 = new category("Sports","Football with the league");
 		cat2 = new category("Baking","cakes with shakes");
-		
+		//===============================================================DEAL==========================================================
+		dealList = new ArrayList<Deal>();
+		deal1 = new Deal(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90, "01/01/2021");
+		deal2 = new Deal(2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com", 10.80, "02/02/2021");
+		//===============================================================ITEM==========================================================
+		itemList = new ArrayList<Item>();
+	    item1 = new Item("Sony Laptop", "Sony Inspiron13", 100, "2021-08-03", "2021-08-04", 1);
+	    item2 = new Item("Dell Laptop", "Dell Inspiron14", 150, "2021-08-05", "2021-08-06", 1);
 
 	}
 
@@ -165,21 +178,20 @@ public class C206_CaseStudyTest {
 	}
 	
 	@Test
-	public void testDeleteUser()
-	{
-		assertNotNull("Test that the userList is not null", userList);
-		
-		C206_CaseStudy.addUser(userList, u1);
-		C206_CaseStudy.addUser(userList, u2);
-		
-		assertEquals("Test that userList size is 2", 2, userList.size());
-		
-		assertTrue(userList.get(0).equals(u1));
-		C206_CaseStudy.deleteUser(userList, "johnlim@C206.com");
-		assertFalse(userList.get(0).equals(u1));
-	}
-	//=======================================================================================================================================================================
-	@Test 
+	  public void testDoDeleteUser()
+	  {
+	    assertNotNull("Test that the userList is not null", userList);
+	    
+	    C206_CaseStudy.addUser(userList, u1);
+	    C206_CaseStudy.addUser(userList, u2);
+	    
+	    assertEquals("Test that userList size is 2", 2, userList.size());
+	    
+	    assertTrue(userList.get(0).equals(u1));
+	    C206_CaseStudy.deleteUser(userList, "johnlim@C206.com");
+	    assertFalse(userList.get(0).equals(u1));
+	  }
+	//@Test
 	public void testAddCategory() {
 		
 		//check if category list is not null but empty and can be added to 
@@ -232,7 +244,8 @@ public class C206_CaseStudyTest {
 	}
 
 	@Test
-	public void testDeleteCategory() {
+	public void testDeleteCategory() 
+	{
 		
 		// check that there is a list of 
         assertNotNull("Test that the CategoryList is not null and there are things to delete", CategoryList);
@@ -258,6 +271,131 @@ public class C206_CaseStudyTest {
 		assertEquals("Test that CategoryList size is 1", 1, CategoryList.size());
 		
 	}
+	@Test 
+	  public void testAddItem()
+	{
+	    // Item list is not null, so that can add a new item
+	    assertNotNull("Test if there is valid item arraylist to add to", itemList);
+
+	    // Given an empty item list, after add one item, the size of the list is 1.
+	    C206_CaseStudy.addItem(itemList, item1);    
+	    assertEquals("Test if that item arraylist size is 1?", 1, itemList.size());
+
+	    // The item just added is as same as the first item of the list
+	    assertSame("Test that  is added same as 1st item of the list?", item1, itemList.get(0));
+	    
+	    // Test that the field submitted is not null.
+	    assertNotNull(item1.getName());
+	    assertNotNull(item1.getDescription());
+	    assertNotNull(item1.getMinimumBidPrice());
+	    assertNotNull(item1.getAuctionStartDate());
+	    assertNotNull(item1.getAuctionEndDate());
+	    assertNotNull(item1.getBidIncrement());
+	    
+	    // Given an empty item list, after add one item, the size of the list is 1.
+	    C206_CaseStudy.addItem(itemList, item2);    
+	    assertEquals("Test if that item arraylist size is 2?", 2, itemList.size());
+	    // The item just added is as same as the second item of the list
+	    assertSame("Test that  is added same as 1st item of the list?", item2, itemList.get(1));    
+	        
+	    // Test that an error message will be displayed after submitting if there are empty fields.
+	    // Test that a successful message will be displayed after submitting, if there are no empty fields.
+	}
+	@Test
+	public void testRetrieveAllItems()
+	{
+	    // Test if Item list is not null, so can be displayed
+	    assertNotNull("Test if there is valid item arraylist to be displayed", itemList);
+
+	    // Test if the list of items retrieved from the list is empty
+	    String allItems = C206_CaseStudy.retrieveAllItems(itemList);
+	    String testOutput = "";
+	    assertEquals(testOutput, allItems);
+	    
+	    // Given an empty list, after adding 2 items, test if the size of the list is 2
+	    C206_CaseStudy.addItem(itemList, item1);
+	    C206_CaseStudy.addItem(itemList, item2);
+	    assertEquals("Test if that item arraylist size is 2?", 2, itemList.size());
+
+	    // Test if the expected output string same as the list of items retrieved from the itemList.
+	    allItems = C206_CaseStudy.retrieveAllItems(itemList);
+	    testOutput = String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n", "Sony Laptop", "Sony Inspiron13", 100, "2021-08-03", "2021-08-04", 1);
+	    testOutput += String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n", "Dell Laptop", "Dell Inspiron14", 150, "2021-08-05", "2021-08-06", 1);
+	    
+	    //Check if the item added is same as the items in testOutput
+	    assertEquals(testOutput, allItems);
+	}
+	@Test
+	public void testDeleteItem() 
+	{
+	    // Test that the list is not null so that there is something for us to delete
+	    assertNotNull("Test that the list is not null so that there is something for us to delete", itemList);
+	    
+	    C206_CaseStudy.addItem(itemList, item1);
+	    C206_CaseStudy.addItem(itemList, item2);
+	      
+	    //test that list size is 2 after adding
+	    assertEquals("Test that itemList size is 2",2, itemList.size());
+	    
+	    //Test that fields are not null for name
+	    assertNotNull(item1.getName());
+	    
+	    //before deletion, check if the index O is item 0 is indeed item 1
+	    assertTrue(itemList.get(0).equals(item1));
+	    
+	    //delete item1
+	    C206_CaseStudy.deleteItem(itemList, item1.getName());
+	    
+	    //after deletion , check item1 has been deleted
+	    assertFalse(itemList.get(0).equals(item1));
+	    
+	    assertEquals("Test that itemList size is 1", 1, itemList.size());
+	    // Test that a successful message will be displayed after deleting successfully.
+	    // Test that the list will be removed from the item list.
+	}
+	@Test
+	public void testViewDeal()
+	{
+	   assertNotNull("Test if the deal list is not empty", dealList);
+	
+	   String allDeal = C206_CaseStudy.retrieveAllDeal(dealList);
+	   String Output = "";
+	   assertEquals("Check that ViewAllDeals", Output, allDeal);
+	
+	   C206_CaseStudy.addNewDeal(dealList, deal1);
+	   C206_CaseStudy.addNewDeal(dealList, deal2);
+	   assertEquals("Test if that deal arraylist size is 2?", 2, dealList.size());
+	
+	   String alldeal = C206_CaseStudy.retrieveAllDeal(dealList);
+	   Output = String.format("%-10s %-25s %-20s %-20s %-20.2f %s\n", 1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90, "01/01/2021");
+	   Output += String.format("%-10s %-25s %-20s %-20s %-20.2f %s\n",2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com", 10.80, "02/02/2021");
+	   assertEquals(Output, alldeal);
+	}
+	@Test
+	public void testAddDeal() 
+	{
+
+	  assertNotNull("Test if there is valid deal arraylist to add to", dealList);
+
+	  C206_CaseStudy.addNewDeal(dealList, deal1);
+	  assertEquals("Test if that deal arraylist size is 1?", 1, dealList.size());
+
+	  assertSame("Test that deal is added same as 1st item of the list?", deal1, dealList.get(0));
+
+	  assertNotNull(deal1.getPrice());
+	  assertNotNull(deal1.getBuyerEmail());
+	  assertNotNull(deal1.getName());
+	  assertNotNull(deal1.getSellerEmail());
+
+	}
+	@Test
+	public void testDeleteDeal() {
+	assertNotNull("Test that the list is not null so that there is something for us to delete", dealList);
+
+	 C206_CaseStudy.deleteDeal(dealList, deal1.getId());
+	assertEquals(0, dealList.size());
+	}
+	
 
 
 	@After
