@@ -48,7 +48,9 @@ public class C206_CaseStudy {
     		else if (userChoice == 3) // delete
     		{
     			C206_CaseStudy.setHeader("DELETE USER");
-    			C206_CaseStudy.deleteUser(userList);
+    			viewAllUsers(userList);
+    			String email = Helper.readString("Enter a user email > ");
+    			deleteUser(userList, email);	
     		}
     		
     	}
@@ -276,65 +278,34 @@ public class C206_CaseStudy {
 		System.out.println(output);
 	}
 	//======================================================================= DELETE USER ===================================================================================
-	public static void deleteUser(ArrayList<User> userList)
-	{
-		C206_CaseStudy.viewAllUsers(userList);
-		String email = Helper.readString("Enter User Email > ");
-		Boolean isDeleted = doDeleteUser(userList, email);
-		
-		if(isDeleted == false)
-		{
-			System.out.println("Invalid user email");
-		}
-		else
-		{
-			System.out.println("User " + email + "deleted!");
-		}
-	}
-	
-	public static boolean doDeleteUser(ArrayList<User> userList, String email)
-	{
-		boolean isDeleted = false;
-		deleteUser(userList, email);
-		return isDeleted;
-	}
-	
-	public static String deleteUser(ArrayList<User> userList, String email) 
-	{
-		boolean isDeleted = false;
-		String output = "";
-		for (int e = 0; e < userList.size(); e++) 
-		{
-			if (email == userList.get(e).getEmail())
-			{
-				String confirm = Helper.readString("Confirm delete user " + email + "? (Yes/No) >> ");
-				if (confirm.equalsIgnoreCase("Yes")) 
-				{
-					userList.remove(e);
-					output = "You have successfully deleted user " + email;
-					System.out.println(output);
-					isDeleted = true;
-				}
-				else if (confirm.equalsIgnoreCase("No")){
-					output = "You have cancelled the deletion of user " + email;
-					System.out.println(output);
-					isDeleted = false;
-				}				
-			}
-			else 
-			{
-				output = "Please enter valid email.";
-				System.out.println(output);
-				isDeleted = false;
-			}
-		}
-
-		if (isDeleted != true) {
-			output = "Deletion of user " + email + " failed.";
-			System.out.println(output);
-		}
-		return output;
-	}
+	public static void deleteUser(ArrayList<User> userList, String email)
+	  {
+	    boolean isDeleted = false;
+	    
+	    if(email.isEmpty())
+	    {
+	      System.out.println("Field is empty");
+	    }
+	    else 
+	    {
+	      for(int i = 0; i < userList.size(); i++)
+	      {
+	        if(userList.get(i).getName().equalsIgnoreCase(email))
+	        {
+	          System.out.println("User (" + email + ") has been deleted !");
+	          userList.remove(i);
+	          isDeleted = true;
+	          break;
+	        }
+	          
+	      }
+	      
+	    }
+	    if(isDeleted == false)
+	    {
+	      System.out.println("There is no such user email.");
+	    }
+	  }
 	//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// ZANE TAN (CATEGORY)
 	public static category inputCategory() // input category function
