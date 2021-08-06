@@ -8,6 +8,9 @@
  * Class: W67L
  * Date/Time Last modified: ${currentDate:date('EEEE dd-MM-yyyy HH:mm')}
  */
+
+import java.util.regex.*;
+
 public class User {
 	
 	private String name;
@@ -60,6 +63,23 @@ public class User {
 		this.role = role;
 	}
 	
-	
-}
+	public static String empty() {
+		String output = "Please do not leave fields empty!";
+		return output;
+	}
 
+	public static boolean isAlphaNumeric(String password) 
+	{
+		return password != null && password.matches("[a-zA-Z0-9]+") && password.length() >= 8;
+	}
+	
+	public static boolean isValidEmail(String email)
+	{
+		return email != null && email.contains("@") && email.contains(".com");
+	}
+	
+	public static boolean isValidRole(String role)
+	{
+		return role.equalsIgnoreCase("Admin") || role.equalsIgnoreCase("Seller") || role.equalsIgnoreCase("Buyer");
+	}
+}
