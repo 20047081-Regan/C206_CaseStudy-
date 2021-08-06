@@ -13,8 +13,8 @@ public class C206_CaseStudy {
 		userList.add(new User("Joan Lee", "joanlee@C206.com", "09876", "Admin"));
 		//----------------------------------------------------------------CATEGORIES----------------------------------------------------------------------------------
 		ArrayList<category> CategoryList = new ArrayList<category>();
-		CategoryList.add(new category("Sports","Football Singapore"));
-		CategoryList.add(new category("Cooking","Gordan Ramsey"));
+		CategoryList.add(new category("Sports");
+		CategoryList.add(new category("Cooking");
 		//-------------------------------------------------------------------BID--------------------------------------------------------------------------------------
 		ArrayList<Bid> bidList = new ArrayList<Bid>();
 		bidList.add(new Bid(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90));
