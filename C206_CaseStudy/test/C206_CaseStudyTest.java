@@ -77,13 +77,13 @@ public class C206_CaseStudyTest {
 
 		// The item just added is as same as the first item of the list
 		assertSame("Test that bid is added same as 1st item of the list?", bid1, bidList.get(0));
-		
+
 		// Test that the field submitted is not null.
 		assertNotNull(bid1.getBidPrice());
 		assertNotNull(bid1.getBuyerEmail());
 		assertNotNull(bid1.getItemName());
 		assertNotNull(bid1.getSellerEmail());
-		
+
 		// Test that an error message will be displayed after submitting if there are empty fields.
 		// Test that a successful message will be displayed after submitting, if there are no empty fields.
 	}
@@ -97,10 +97,10 @@ public class C206_CaseStudyTest {
 		String allBids = C206_CaseStudy.retrieveAllBid(bidList);
 		String testOutput = "";
 		assertEquals(testOutput, allBids);
-//		String notFound = "You have no existing bids at the moment.";
-//		assertSame(notFound,C206_CaseStudy.viewAllBids(bidList));
-//		assertTrue(displayError());
-		
+		//		String notFound = "You have no existing bids at the moment.";
+		//		assertSame(notFound,C206_CaseStudy.viewAllBids(bidList));
+		//		assertTrue(displayError());
+
 		// Given an empty list, after adding 2 items, test if the size of the list is 2
 		C206_CaseStudy.addNewBid(bidList, bid1);
 		C206_CaseStudy.addNewBid(bidList, bid2);
@@ -113,18 +113,20 @@ public class C206_CaseStudyTest {
 		assertEquals(testOutput, allBid);
 	}
 
+
 	@Test
 	public void testDeleteBid() {
 		// Test that the list is not null so that there is something for us to delete
 		assertNotNull("Test that the list is not null so that there is something for us to delete", bidList);
-		
+
 		// Test that after deleting 1 item, the size of the array is 0.
 		C206_CaseStudy.deleteMyBid(bidList, bid1.getBidID());
 		assertEquals(0, bidList.size());
-		
+
 		// Test that a successful message will be displayed after deleting successfully.
 		// Test that the bid will be removed from the bid list.
 	}
+	
 	//------------------------------------------------------------------------- A.Elizabeth 20020036 ------------------------------------------------------------------------
 	//============================================================================ @Test ---> USER ==========================================================================
 	@Test
