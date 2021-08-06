@@ -587,7 +587,6 @@ public class C206_CaseStudy {
 	  }
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     // REGAN (BIDDING)
-	// ADD
 	public static Bid inputBid(ArrayList<Bid> bidList) {
 		C206_CaseStudy.setHeader("ADD BID");
 		int bidID = bidList.size() + 1;
@@ -601,10 +600,25 @@ public class C206_CaseStudy {
 			Bid.emptyFields();
 			sellerEmail = Helper.readString("Enter Seller Email > ");
 		}
+		// check seller email validation.
+		String pattern = "^(.+)@(.+)$";
+		boolean matched = Pattern.matches(pattern, sellerEmail);
+		while (matched != true) {
+			System.out.println("Invalid email entered.");
+			sellerEmail = Helper.readString("Enter Seller Email > ");
+			matched = Pattern.matches(pattern, sellerEmail);
+		}
 		String buyerEmail = Helper.readString("Enter Buyer Email > ");
 		while (buyerEmail.isEmpty()) {
 			Bid.emptyFields();
 			buyerEmail = Helper.readString("Enter Buyer Email > ");
+		}
+		// check buyer email validation.
+		matched = Pattern.matches(pattern, buyerEmail);
+		while (matched != true) {
+			System.out.println("Invalid email entered.");
+			buyerEmail = Helper.readString("Enter Buyer Email > ");
+			matched = Pattern.matches(pattern, buyerEmail);
 		}
 		double price = Helper.readDouble("Enter Item Price > ");
 		while (price == 0) {
@@ -661,6 +675,7 @@ public class C206_CaseStudy {
 		}
 		return output;
 	}
+      // VIEW
 	public static String retrieveAllBid(ArrayList<Bid> bidList) {
 		String output = "";
 
