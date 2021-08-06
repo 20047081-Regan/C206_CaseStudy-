@@ -29,7 +29,8 @@ public class C206_CaseStudy {
 		//------------------------------------------------------------------------------------------------------------------------------------------------------------
 		
 		
-		while(true) { 
+		while(true)
+		{ 
 			LoginMenu();
 			int loginOption = 0;
 			
@@ -38,6 +39,7 @@ public class C206_CaseStudy {
 			while (loginOption != loginInvalid)
 			{
 				loginOption = Helper.readInt("Enter an login option > ");
+				
 				if(loginOption == 1)
 				{
 					String uName = Helper.readString("Enter username > ");
@@ -51,14 +53,17 @@ public class C206_CaseStudy {
 					}
 					while(validUser)
 					{
+						
 						 int option = 0;
+						
+						 
 					
 						    int OPTION_QUIT = 6;
 							while(option != OPTION_QUIT){
 						    	
 						    	mainmenu();
 						    	option = Helper.readInt("Enter your option > ");
-						    	
+				                 ///////////////////ELIZABETH/////////////////////////////////////
 						    	if(option == 1) // part 1
 						    	{
 						    		userMenu();
@@ -81,6 +86,7 @@ public class C206_CaseStudy {
 						    		}
 						    		
 						    	}
+						    	/////////////////// ZANE /////////////////////////////////////
 						    	else if (option == 2)
 						    	{
 						    		categoryMenu();
@@ -125,6 +131,7 @@ public class C206_CaseStudy {
 						    			
 						    		}
 						    	}
+				                ///////////////////YIN MINN/////////////////////////////////////
 						    	else if (option == 3)
 						    	{
 						    		itemMenu();
@@ -161,6 +168,7 @@ public class C206_CaseStudy {
 						    			
 						    		}
 						    	}
+						    	 ///////////////////REGAN/////////////////////////////////////
 						    	else if (option == 4)
 						    	{
 						    		bidMenu();
@@ -169,7 +177,7 @@ public class C206_CaseStudy {
 						    		if(bidChoice == 1)
 						    		{
 
-						    	     C206_CaseStudy.viewAllBids(bidList);
+						    	        C206_CaseStudy.viewAllBids(bidList);
 								
 
 						    		}
@@ -182,13 +190,14 @@ public class C206_CaseStudy {
 						    		}
 						    		else if(bidChoice == 3)
 						    		{
-						             viewAllBids(bidList);
+						                 viewAllBids(bidList);
 						    		 int BidID = removeBid(bidList);
 						    		 C206_CaseStudy.deleteMyBid(bidList, BidID);
 						    			
 								
 						    		}
 						    	}
+						    	 ///////////////////SHAO CHUN/////////////////////////////////////
 						    	else if (option == 5)
 						    	{
 						    		dealMenu();
@@ -197,29 +206,33 @@ public class C206_CaseStudy {
 						    		if(dealChoice== 1)
 						    		{
 						    			// View all bid
-										viewAllDeals(dealList);
+									viewAllDeals(dealList);
 						    			
 						    		}
 						    		else if(dealChoice == 2)
 						    		{
 						    			// Add a new bid
-										Deal newDeal = inputDeal(dealList);
-										addNewDeal(dealList, newDeal);
+								       Deal newDeal = inputDeal(dealList);
+								       addNewDeal(dealList, newDeal);
 						    			
 						    		}
 						    		else if(dealChoice == 3)
 						    		{
 						    			// Delete bid
 						    			viewAllDeals(dealList);
-										int dealID = removeDeal(dealList);
-										deleteDeal(dealList, dealID);
+									int dealID = removeDeal(dealList);
+									deleteDeal(dealList, dealID);
 						    			
 						    		}
 						    		
 						    	}
-						    	else if ( option == OPTION_QUIT)
+						    	else if (option == OPTION_QUIT)
 						    	{
 						    		System.out.println("Goodbye");
+						    		validUser = false;
+						    		LoginMenu();
+						   
+						    		
 						    	}
 						    	else
 						    	{
@@ -237,20 +250,20 @@ public class C206_CaseStudy {
 	    			addUser(userList, newUser);
 			        
 				}
-				else if(loginOption == 3)
+				else if(loginOption == loginInvalid)
 				{
 				   System.out.println("Goodbye");
+				   
+				  
 				}
 				else
 				{
-					System.out.println("Invalid option");
+				   System.out.println("Invalid option");
 				}
 			}
-			
-				
+					
 	
 	}
-		
 		
 				
 	}
@@ -354,7 +367,6 @@ public class C206_CaseStudy {
 		return isLogin;	
 
 	}
-
 	//------------------------------------------------------------------- A. Elizabeth 20020036 -----------------------------------------------------------------------------
 	//======================================================================= USER OPTIONS ==================================================================================
 	//========================================================================= ADD USER ====================================================================================
@@ -457,7 +469,7 @@ public class C206_CaseStudy {
 		
 		System.out.println(output);
 	}
-	
+	// retrieve categories
 	public static String retrieveAllCategory(ArrayList<category> CategoryList) {
 		String output = "";
 		
@@ -476,6 +488,7 @@ public class C206_CaseStudy {
 		return output;
 		
 	}
+	// delete category
 	public static void deleteCategory(ArrayList<category> CategoryList, String name)
 	{
 		boolean isDeleted = false;
@@ -504,26 +517,7 @@ public class C206_CaseStudy {
 			System.out.println("There is no such category name");
 		}
 	}
-	public static String retrieveAllBid(ArrayList<Bid> bidList) {
-		String output = "";
-
-		for (int i = 0; i < bidList.size(); i++) {
-			output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
-		}
-		return output;
-	}
-	public static void viewAllBids(ArrayList<Bid> bidList) {
-		C206_CaseStudy.setHeader("VIEW ALL BIDS");
-		String output = "";
-		if (bidList.isEmpty()) {
-			output = "You have no existing bids at the moment.";
-		}
-		else {
-			output = String.format("%-10s %-25s %-20s %-20s %-10s\n", "BID ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "BID PRICE");
-			output += retrieveAllBid(bidList);
-		}
-		System.out.println(output);
-	}
+	
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
     //YIN MINN (ITEM)
 	//Input item
@@ -666,6 +660,26 @@ public class C206_CaseStudy {
 			System.out.println(output);
 		}
 		return output;
+	}
+	public static String retrieveAllBid(ArrayList<Bid> bidList) {
+		String output = "";
+
+		for (int i = 0; i < bidList.size(); i++) {
+			output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
+		}
+		return output;
+	}
+	public static void viewAllBids(ArrayList<Bid> bidList) {
+		C206_CaseStudy.setHeader("VIEW ALL BIDS");
+		String output = "";
+		if (bidList.isEmpty()) {
+			output = "You have no existing bids at the moment.";
+		}
+		else {
+			output = String.format("%-10s %-25s %-20s %-20s %-10s\n", "BID ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "BID PRICE");
+			output += retrieveAllBid(bidList);
+		}
+		System.out.println(output);
 	}
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// SHAOCHUN (DEAL)
