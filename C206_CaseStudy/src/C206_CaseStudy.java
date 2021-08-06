@@ -118,15 +118,9 @@ public class C206_CaseStudy {
 								}
 								else if (categoryChoice == 3)
 								{
-									Helper.line(30, "-");
-									System.out.println("DELETE CATEGORY");
-									Helper.line(30, "-");
-
 									viewAllcategories(CategoryList);
-
-									String name = Helper.readString("Enter a category name > ");
-
-									deleteCategory(CategoryList,name);
+						    			String name = removeCategory(CategoryList);
+									C206_CaseStudy.deleteCategory(CategoryList, name);
 
 
 
@@ -439,47 +433,64 @@ public class C206_CaseStudy {
 	// input category function
 	public static category inputCategory() 
 	{
-
+		
 		String Name = Helper.readString("Enter Name of category (no numbers or special characters) >> ");
-		String Item = Helper.readString("Enter Item Name(no numbers or special characters) >> ");
-
-		category newCat = new category(Name,Item);
+		
+	        category newCat = new category(Name);
 
 		return newCat;
 	}
 	public static void AddCategory(ArrayList<category> CategoryList , category newCat) 
 	{
-
-		if(newCat.getName().isEmpty() || newCat.getItem().isEmpty())
+		boolean addchecker = false;
+		
+		if(newCat.getName().isEmpty())
 		{
 			System.out.println("Please enter all fields that are required");
 		}
 		else
 		{
-			CategoryList.add(newCat);
-			System.out.println("Category Name ( " + newCat.getName() + " ) is added.");
-			System.out.println("Category Item ( " + newCat.getItem() + " ) is added.");	
+			for(int i = 0; i < CategoryList.size();i++)
+			{
+				if(CategoryList.get(i).getName().equalsIgnoreCase(newCat.getName()))
+				{
+					addchecker = true;
+					System.out.println("Existing name found");
+					break;
+				}
+			}
+			if(addchecker == false)
+			{
+				
+				CategoryList.add(newCat);
+				System.out.println("Category Name ( " + newCat.getName() + " ) is added.");
+								
+				
+			}
+			
+			
 		}
-
+		
+		
 	}
+	
 	public static void viewAllcategories(ArrayList<category> CategoryList) {
-
-		String output = String.format("%-10s %-20s \n", "NAME", "ITEM NAME");
-
+		
+		String output = String.format("%-10s \n", "CATEGORY NAME");
+		
 		output += retrieveAllCategory(CategoryList);
-
+		
 		System.out.println(output);
 	}
 	// retrieve categories
 	public static String retrieveAllCategory(ArrayList<category> CategoryList) {
 		String output = "";
-
+		
 		for(int i = 0; i < CategoryList.size();i++)
 		{
 			if(CategoryList.size() != 0)
 			{
-				output += String.format("%-10s %-20s \n", CategoryList.get(i).getName(),
-						CategoryList.get(i).getItem());
+				output += String.format("%-10s \n", CategoryList.get(i).getName());
 			}
 			else
 			{
@@ -487,38 +498,50 @@ public class C206_CaseStudy {
 			}
 		}
 		return output;
-
+		
+	}
+	public static String removeCategory(ArrayList<category> CategoryList)
+	{
+		C206_CaseStudy.setHeader("DELETE MY CATEGORY");
+		String name = Helper.readString("Enter category name > ");
+		return name;
 	}
 	// delete category
-	public static void deleteCategory(ArrayList<category> CategoryList, String name)
+	public static String deleteCategory(ArrayList<category> CategoryList, String name)
 	{
-		boolean isDeleted = false;
-
-		if(name.isEmpty())
+		boolean isExist = false;
+		String output = "";
+		for(int i = 0; i < CategoryList.size();i++)
 		{
-			System.out.println("field is empty");
-		}
-		else 
-		{
-			for(int i = 0; i < CategoryList.size(); i++)
+			if(CategoryList.get(i).getName().equals(name))
 			{
-				if(CategoryList.get(i).getName().equalsIgnoreCase(name))
+				char CatDelete = Helper.readChar("Are you sure that you want to delete this category  (Y/N) > ");
+				if(CatDelete == 'Y' || CatDelete == 'y')
 				{
-					System.out.println("Category (" + name + ") has been deleted !");
 					CategoryList.remove(i);
-					isDeleted = true;
-					break;
+					System.out.println("Category (" + name + ") has been deleted !");
 				}
-
+				else if(CatDelete == 'N' || CatDelete == 'n')
+				{
+					output += "You have cancelled the deletion of category ( " + name + " )";
+					
+				}
+				else
+				{
+					output = "Please enter a valid name of category";
+				}
+				isExist = true;
 			}
-
 		}
-		if(isDeleted == false)
+		if(isExist != true)
 		{
-			System.out.println("There is no such category name");
+			output = "Deleted ( " + name + " )";
+			System.out.println(output);
 		}
+		return output;
+		
 	}
-
+	
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	//YIN MINN (ITEM)
 	//Input item
