@@ -2,12 +2,12 @@
 public class category {
 	
 	private String name;
-	private String item;
 	
-	public category(String name, String item)
+	
+	public category(String name)
 	{
 		this.name = name;
-		this.item = item;
+		
 	}
 
 	public String getName() {
@@ -18,13 +18,5 @@ public class category {
 		this.name = name;
 	}
 
-	public String getItem() {
-		return item;
-	}
-
-	public void setItem(String item) {
-		this.item = item;
-	}
-	
 
 }
