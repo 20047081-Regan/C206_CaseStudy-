@@ -41,10 +41,10 @@ public class C206_CaseStudyTest {
 		bid2 = new Bid(2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com",10.80);
 		//==============================================================USER===========================================================
 		userList = new ArrayList<User>();
-		u1 = new User("John Lim", "johnlim@C206.com", "12345", "Buyer");
-		u2 = new User("James Tan", "jamestan@C206.com", "67890", "Buyer");
-		u3 = new User("Susan Chan", "susanchan@C206.com", "54321", "Seller");
-		u4 = new User("Joan Lee", "joanlee@C206.com", "09876", "Admin");
+		u1 = (new User("John Lim", "johnlim@C206.com", "12345abc", "Buyer"));
+		u2 = (new User("James Tan", "jamestan@C206.com", "12345abc", "Buyer"));
+		u3 = (new User("Susan Chan", "susanchan@C206.com", "12345abc", "Seller"));
+		u4 = (new User("Admin", "admin@C206.com", "admin123", "Admin"));
 		//=============================================================CATEGORY========================================================
 		CategoryList = new ArrayList<category>();
 		cat1 = new category("Sports");
@@ -175,9 +175,9 @@ public class C206_CaseStudyTest {
 		testOutput = String.format("%-10s %-20s %-10s\n", "John Lim", "johnlim@C206.com", "Buyer");
 		testOutput += String.format("%-10s %-20s %-10s\n", "James Tan", "jamestan@C206.com", "Buyer");
 		testOutput += String.format("%-10s %-20s %-10s\n", "Susan Chan", "susanchan@C206.com", "Seller");
-		testOutput += String.format("%-10s %-20s %-10s\n", "Joan Lee", "joanlee@C206.com", "Admin");
+		testOutput += String.format("%-10s %-20s %-10s\n", "Admin", "admin@C206.com", "Admin");
 
-		assertEquals("Check ViewAllUsers", testOutput, allUsers);	 
+		assertEquals("Check ViewAllUsers", testOutput, allUsers);	 	 
 	}
 	
 	@Test
@@ -191,7 +191,7 @@ public class C206_CaseStudyTest {
 	    assertEquals("Test that userList size is 2", 2, userList.size());
 	    
 	    assertTrue(userList.get(0).equals(u1));
-	    C206_CaseStudy.deleteUser(userList, "johnlim@C206.com");
+	    C206_CaseStudy.doDeleteUser(userList, "johnlim@C206.com");
 	    assertFalse(userList.get(0).equals(u1));
 	  }
 	//@Test
