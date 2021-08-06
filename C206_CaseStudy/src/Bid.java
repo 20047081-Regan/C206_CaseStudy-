@@ -37,5 +37,4 @@ public class Bid {
 		String errorMessage = "Please fill up all fields";
 		return errorMessage;
 	}
-	
 }
