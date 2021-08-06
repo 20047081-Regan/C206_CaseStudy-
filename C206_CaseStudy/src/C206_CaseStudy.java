@@ -7,10 +7,10 @@ public class C206_CaseStudy {
 
 		//------------------------------------------------------------------USER--------------------------------------------------------------------------------------
 		ArrayList<User> userList = new ArrayList<User>();
-		userList.add(new User("John Lim", "johnlim@C206.com", "12345", "Buyer"));
-		userList.add(new User("James Tan", "jamestan@C206.com", "67890", "Buyer"));
-		userList.add(new User("Susan Chan", "susanchan@C206.com", "54321", "Seller"));
-		userList.add(new User("Joan Lee", "joanlee@C206.com", "09876", "Admin"));
+		userList.add(new User("John Lim", "johnlim@C206.com", "12345abc", "Buyer"));
+		userList.add(new User("James Tan", "jamestan@C206.com", "12345abc", "Buyer"));
+		userList.add(new User("Susan Chan", "susanchan@C206.com", "12345abc", "Seller"));
+		userList.add(new User("Admin", "admin@C206.com", "admin123", "Admin"));
 		//----------------------------------------------------------------CATEGORIES----------------------------------------------------------------------------------
 		ArrayList<category> CategoryList = new ArrayList<category>();
 		CategoryList.add(new category("Sports");
@@ -51,6 +51,7 @@ public class C206_CaseStudy {
 					if(validUser == false)
 					{
 						System.out.println("Either your name or password was incorrect. Please try again!");
+						LoginMenu();
 					}
 					while(validUser)
 					{
@@ -74,18 +75,20 @@ public class C206_CaseStudy {
 									viewAllUsers(userList);
 								}
 								else if (userChoice == 2) // add
-								{
-									User newUser = inputUser();
-									addUser(userList, newUser);
-								}
-								else if (userChoice == 3) // delete
-								{
-									C206_CaseStudy.setHeader("DELETE USER");
-									viewAllUsers(userList);
-									String email = Helper.readString("Enter a user email > ");
-									deleteUser(userList, email);	
-								}
-
+						    		{
+						    			User newUser = inputUser(userList);
+						    			addUser(userList, newUser);
+						    		}
+						    		else if (userChoice == 3) // delete
+						    		{
+						    			CaseStudy_CAOS.setHeader("DELETE USER");
+						    			viewAllUsers(userList);
+						    			String email = Helper.readString("Enter a user email > ");
+						    			deleteUser(userList, email);
+						    			validUser = false;
+						    			LoginMenu();
+						    			break;
+						    		}
 							}
 							/////////////////// ZANE /////////////////////////////////////
 							else if (option == 2)
@@ -118,9 +121,15 @@ public class C206_CaseStudy {
 								}
 								else if (categoryChoice == 3)
 								{
+									Helper.line(30, "-");
+									System.out.println("DELETE CATEGORY");
+									Helper.line(30, "-");
+
 									viewAllcategories(CategoryList);
-						    			String name = removeCategory(CategoryList);
-									C206_CaseStudy.deleteCategory(CategoryList, name);
+
+									String name = Helper.readString("Enter a category name > ");
+
+									deleteCategory(CategoryList,name);
 
 
 
@@ -243,7 +252,7 @@ public class C206_CaseStudy {
 				{
 					User newUser = inputUser();
 					addUser(userList, newUser);
-
+					LoginMenu();
 				}
 				else if(loginOption == loginInvalid)
 				{
@@ -364,14 +373,57 @@ public class C206_CaseStudy {
 	}
 	//------------------------------------------------------------------- A. Elizabeth 20020036 -----------------------------------------------------------------------------
 	//======================================================================= USER OPTIONS ==================================================================================
-	//========================================================================= ADD USER ====================================================================================
-	public static User inputUser()
+	public static boolean notExist(ArrayList<User> userList, String name)
 	{
-		String name = Helper.readString("Enter Name >> ");
-		String email = Helper.readString("Enter Email >> ");
-		String password = Helper.readString("Enter Password >> ");
-		String role = Helper.readString("Enter Role >> ");
+		boolean exist = false;
+		for(int e = 0; e < userList.size(); e++)
+		{
+			if(userList.get(e).getName().equalsIgnoreCase(name))
+			{
+				exist = false;
+				break;
+			}
+			else
+			{
+				exist = true;
+			}
+		}
+		return exist;
+	}
+	//========================================================================= ADD USER ====================================================================================
+	public static User inputUser(ArrayList<User> userList) {
+		C206_CaseStudy.setHeader("ADD USER");
 
+		String name = Helper.readString("Enter Name > ");
+		while (name.isEmpty() || notExist(userList, name) == false) 
+		{
+			User.empty();
+			System.out.println("Name already exists! \nPlease choose another name.");
+			name = Helper.readString("Enter Name > ");
+		}
+		
+		String email = Helper.readString("Enter Email > ");
+		while (email.isEmpty() || User.isValidEmail(email) == false) 
+		{
+			User.empty();
+			System.out.println("Email must contain '@' and '.com'!");
+			email = Helper.readString("Enter Email > ");
+		}
+		String password = Helper.readString("Enter Password > ");
+		while (password.isEmpty() || User.isAlphaNumeric(password) == false) 
+		{
+			User.empty();
+			System.out.println("Password must be alpha-numeric and \ncontain at least 8 characters.");
+			password = Helper.readString("Enter Password > ");
+		}
+
+		String role = Helper.readString("Enter Role > ");
+		while (role.isEmpty() || User.isValidRole(role) == false) 
+		{
+			User.empty();
+			System.out.println("Role can only be \nAdmin / Seller / Buyer");
+			role = Helper.readString("Enter Role > ");
+		}
 		User newUser = new User(name, email, password, role);
 		return newUser;
 	}
@@ -400,7 +452,43 @@ public class C206_CaseStudy {
 		System.out.println(output);
 	}
 	//======================================================================= DELETE USER ===================================================================================
-	public static void deleteUser(ArrayList<User> userList, String email)
+	public static String deleteUser(ArrayList<User> userList, String email) {
+		boolean exists = false;
+		String output = "";
+		for (int i = 0; i < userList.size(); i ++) 
+		{
+			if (userList.get(i).getEmail().equalsIgnoreCase(email)) 
+			{
+				String confirm = Helper.readString("Confirm Delete User: " + email + "? (Yes/No) > ");
+				if (confirm.equalsIgnoreCase("Yes")) 
+				{
+					userList.remove(i);
+					output = "You have successfully deleted User: " + email;
+					System.out.println(output);
+				}
+				else if (confirm.equalsIgnoreCase("No")) 
+				{
+					output = "You have cancelled deletion of User: " + email;
+					System.out.println(output);
+				}
+				else 
+				{
+					output = "Please enter a valid email";
+					System.out.println(output);
+				}
+				exists = true;
+			}
+		}
+
+		if (exists != true) 
+		{
+			output = "Email " + email + " does not exist!";
+			System.out.println(output);
+		}
+		return output;
+	}
+	
+	public static void doDeleteUser(ArrayList<User> userList, String email)
 	{
 		boolean isDeleted = false;
 
@@ -433,64 +521,47 @@ public class C206_CaseStudy {
 	// input category function
 	public static category inputCategory() 
 	{
-		
+
 		String Name = Helper.readString("Enter Name of category (no numbers or special characters) >> ");
-		
-	        category newCat = new category(Name);
+		String Item = Helper.readString("Enter Item Name(no numbers or special characters) >> ");
+
+		category newCat = new category(Name,Item);
 
 		return newCat;
 	}
 	public static void AddCategory(ArrayList<category> CategoryList , category newCat) 
 	{
-		boolean addchecker = false;
-		
-		if(newCat.getName().isEmpty())
+
+		if(newCat.getName().isEmpty() || newCat.getItem().isEmpty())
 		{
 			System.out.println("Please enter all fields that are required");
 		}
 		else
 		{
-			for(int i = 0; i < CategoryList.size();i++)
-			{
-				if(CategoryList.get(i).getName().equalsIgnoreCase(newCat.getName()))
-				{
-					addchecker = true;
-					System.out.println("Existing name found");
-					break;
-				}
-			}
-			if(addchecker == false)
-			{
-				
-				CategoryList.add(newCat);
-				System.out.println("Category Name ( " + newCat.getName() + " ) is added.");
-								
-				
-			}
-			
-			
+			CategoryList.add(newCat);
+			System.out.println("Category Name ( " + newCat.getName() + " ) is added.");
+			System.out.println("Category Item ( " + newCat.getItem() + " ) is added.");	
 		}
-		
-		
+
 	}
-	
 	public static void viewAllcategories(ArrayList<category> CategoryList) {
-		
-		String output = String.format("%-10s \n", "CATEGORY NAME");
-		
+
+		String output = String.format("%-10s %-20s \n", "NAME", "ITEM NAME");
+
 		output += retrieveAllCategory(CategoryList);
-		
+
 		System.out.println(output);
 	}
 	// retrieve categories
 	public static String retrieveAllCategory(ArrayList<category> CategoryList) {
 		String output = "";
-		
+
 		for(int i = 0; i < CategoryList.size();i++)
 		{
 			if(CategoryList.size() != 0)
 			{
-				output += String.format("%-10s \n", CategoryList.get(i).getName());
+				output += String.format("%-10s %-20s \n", CategoryList.get(i).getName(),
+						CategoryList.get(i).getItem());
 			}
 			else
 			{
@@ -498,50 +569,38 @@ public class C206_CaseStudy {
 			}
 		}
 		return output;
-		
-	}
-	public static String removeCategory(ArrayList<category> CategoryList)
-	{
-		C206_CaseStudy.setHeader("DELETE MY CATEGORY");
-		String name = Helper.readString("Enter category name > ");
-		return name;
+
 	}
 	// delete category
-	public static String deleteCategory(ArrayList<category> CategoryList, String name)
+	public static void deleteCategory(ArrayList<category> CategoryList, String name)
 	{
-		boolean isExist = false;
-		String output = "";
-		for(int i = 0; i < CategoryList.size();i++)
+		boolean isDeleted = false;
+
+		if(name.isEmpty())
 		{
-			if(CategoryList.get(i).getName().equals(name))
+			System.out.println("field is empty");
+		}
+		else 
+		{
+			for(int i = 0; i < CategoryList.size(); i++)
 			{
-				char CatDelete = Helper.readChar("Are you sure that you want to delete this category  (Y/N) > ");
-				if(CatDelete == 'Y' || CatDelete == 'y')
+				if(CategoryList.get(i).getName().equalsIgnoreCase(name))
 				{
-					CategoryList.remove(i);
 					System.out.println("Category (" + name + ") has been deleted !");
+					CategoryList.remove(i);
+					isDeleted = true;
+					break;
 				}
-				else if(CatDelete == 'N' || CatDelete == 'n')
-				{
-					output += "You have cancelled the deletion of category ( " + name + " )";
-					
-				}
-				else
-				{
-					output = "Please enter a valid name of category";
-				}
-				isExist = true;
+
 			}
+
 		}
-		if(isExist != true)
+		if(isDeleted == false)
 		{
-			output = "Deleted ( " + name + " )";
-			System.out.println(output);
+			System.out.println("There is no such category name");
 		}
-		return output;
-		
 	}
-	
+
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	//YIN MINN (ITEM)
 	//Input item
