@@ -47,8 +47,8 @@ public class C206_CaseStudyTest {
 		u4 = new User("Joan Lee", "joanlee@C206.com", "09876", "Admin");
 		//=============================================================CATEGORY========================================================
 		CategoryList = new ArrayList<category>();
-		cat1 = new category("Sports","Football with the league");
-		cat2 = new category("Baking","cakes with shakes");
+		cat1 = new category("Sports");
+		cat2 = new category("Baking");
 		//===============================================================DEAL==========================================================
 		dealList = new ArrayList<Deal>();
 		deal1 = new Deal(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90, "01/01/2021");
@@ -209,9 +209,9 @@ public class C206_CaseStudyTest {
 		assertSame("Check that category 1 is added", cat1, CategoryList.get(0));
 		
 	    
-	    //test that fields are not null for name and item
+	    //test that fields are not null for name 
 	    assertNotNull(cat1.getName());
-	    assertNotNull(cat1.getItem());
+	   
 	    
 	    // Given an empty list, after adding 1 more  new category, is the size of the list 2?
 	    C206_CaseStudy.AddCategory(CategoryList, cat2);
@@ -236,12 +236,12 @@ public class C206_CaseStudyTest {
 		//Given an empty list, after adding 2 items, test if the size of the list is 2 - normal
 	    C206_CaseStudy.AddCategory(CategoryList, cat1);
 	    C206_CaseStudy.AddCategory(CategoryList, cat2);
-		assertEquals("Test that Camcorder arraylist size is 2", 2, CategoryList.size());
+		assertEquals("Test that Category arraylist size is 2", 2, CategoryList.size());
 				
 		//test if the expected output string same as the list of category retrieved from the case study file
 		allCategories = C206_CaseStudy.retrieveAllCategory(CategoryList);
-		testOutput = String.format("%-10s %-20s \n","Sports","Football with the league");
-		testOutput += String.format("%-10s %-20s \n","Baking","cakes with shakes");
+		testOutput = String.format("%-10s \n","Sports");
+		testOutput += String.format("%-10s \n","Baking");
 		
 		// check if the objects aded inside are similar to the objects in test output
 		assertEquals("Check the objects inside the category list", testOutput, allCategories);
@@ -249,33 +249,16 @@ public class C206_CaseStudyTest {
 	}
 
 	@Test
-	public void testDeleteCategory() 
-	{
-		
-		// check that there is a list of 
-        assertNotNull("Test that the CategoryList is not null and there are things to delete", CategoryList);
-        
-		C206_CaseStudy.AddCategory(CategoryList, cat1);
-		C206_CaseStudy.AddCategory(CategoryList, cat2);
-		
-		// test that list size is 2 after adding - normal
-		assertEquals("Test that CategoryList size is 2", 2, CategoryList.size());
-		
-		//test that fields are not null  for name and type
-	    assertNotNull(cat1.getName());
-	    assertNotNull(cat1.getItem());
-	  
-	    // before deletion , check if its index 0 is indeed cat 1
-	    assertTrue(CategoryList.get(0).equals(cat1));
-	    // delete the cat1
-		C206_CaseStudy.deleteCategory(CategoryList,cat1.getName());
-		// after deletion , check cat 1 has been deleted
-		assertFalse(CategoryList.get(0).equals(cat1));
-		
-		// check after deleting cat 1 , arraylist will have only cat 2 left inside
-		assertEquals("Test that CategoryList size is 1", 1, CategoryList.size());
-		// success message after  deleting cat 1 , arraylist will have only cat 2 left inside
-		
+        public void testDeleteCategory() {
+		// Test that the list is not null so that there is something for us to delete
+    	assertNotNull("Test that the list is not null so that there is something for us to delete", CategoryList);
+		// Test that after deleting 1 category, the size of the array is 0
+    	C206_CaseStudy.deleteCategory(CategoryList, cat1.getName());
+	    assertEquals("Check that Category arraylist size is 1", 0, CategoryList.size());
+	   // Test that a successful message will be displayed after deleting successfully.
+	    // (category) is not found
+	   // Test that the category will be removed from categoryList
+	 	
 	}
 	@Test 
 	// YIN MINN
