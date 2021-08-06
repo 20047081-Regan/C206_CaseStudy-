@@ -65,8 +65,8 @@ public class C206_CaseStudyTest {
 		//fail("Not yet implemented"); 
 		assertTrue("C206_CaseStudy_SampleTest ", true);
 	}
-
 	@Test 
+	// REGAN LEE
 	public void testAddBid() {
 		// Item list is not null, so that can add a new item
 		assertNotNull("Test if there is valid bid arraylist to add to", bidList);
@@ -87,7 +87,6 @@ public class C206_CaseStudyTest {
 		// Test that an error message will be displayed after submitting if there are empty fields.
 		// Test that a successful message will be displayed after submitting, if there are no empty fields.
 	}
-
 
 	@Test
 	public void testRetrieveAllBid() {
@@ -146,6 +145,8 @@ public class C206_CaseStudyTest {
 		C206_CaseStudy.addUser(userList, u3);
 		C206_CaseStudy.addUser(userList, u4);
 		assertEquals("Test if User arrayList size is 4.", 4, userList.size());
+		
+		
 	}
 	
 	@Test
@@ -192,6 +193,7 @@ public class C206_CaseStudyTest {
 	    assertFalse(userList.get(0).equals(u1));
 	  }
 	//@Test
+	// ZANE TAN
 	public void testAddCategory() {
 		
 		//check if category list is not null but empty and can be added to 
@@ -215,6 +217,7 @@ public class C206_CaseStudyTest {
 		assertSame("Test that Category 2 is added", cat2, CategoryList.get(1));
 		
 		// test that error message is submitted if empty fields is submitted
+		// Test that a successful message will be displayed after adding category successfully.
 	}
 		
 	@Test
@@ -269,9 +272,11 @@ public class C206_CaseStudyTest {
 		
 		// check after deleting cat 1 , arraylist will have only cat 2 left inside
 		assertEquals("Test that CategoryList size is 1", 1, CategoryList.size());
+		// success message after  deleting cat 1 , arraylist will have only cat 2 left inside
 		
 	}
 	@Test 
+	// YIN MINN
 	  public void testAddItem()
 	{
 	    // Item list is not null, so that can add a new item
@@ -326,6 +331,7 @@ public class C206_CaseStudyTest {
 	    assertEquals(testOutput, allItems);
 	}
 	@Test
+	// SHAO CHUN 
 	public void testDeleteItem() 
 	{
 	    // Test that the list is not null so that there is something for us to delete
