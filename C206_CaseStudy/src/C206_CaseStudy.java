@@ -332,7 +332,7 @@ public class C206_CaseStudy {
 		C206_CaseStudy.setHeader("Campus Online Auction App");
 		System.out.println("1. View all users");
 		System.out.println("2. Add a user");
-		System.out.println("3. Delete a deal(based on email)");
+		System.out.println("3. Delete a User(based on email)");
 		Helper.line(80, "-");
 
 	}
