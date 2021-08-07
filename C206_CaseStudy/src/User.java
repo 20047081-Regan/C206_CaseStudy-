@@ -9,7 +9,7 @@
  * Date/Time Last modified: ${currentDate:date('EEEE dd-MM-yyyy HH:mm')}
  */
 
-import java.util.regex.*;
+import java.util.regex.Pattern;
 
 public class User {
 	
@@ -67,10 +67,12 @@ public class User {
 		String output = "Please do not leave fields empty!";
 		return output;
 	}
+	
+	private static Pattern p = Pattern.compile("^[a-zA-Z0-9]*$");
 
 	public static boolean isAlphaNumeric(String password) 
 	{
-		return password != null && password.matches("[a-zA-Z0-9]+") && password.length() >= 8;
+		return password != null && p.matcher(password).find() && password.length() >= 8;
 	}
 	
 	public static boolean isValidEmail(String email)
@@ -83,3 +85,4 @@ public class User {
 		return role.equalsIgnoreCase("Admin") || role.equalsIgnoreCase("Seller") || role.equalsIgnoreCase("Buyer");
 	}
 }
+
