@@ -194,7 +194,7 @@ public class C206_CaseStudyTest {
 	    C206_CaseStudy.doDeleteUser(userList, "johnlim@C206.com");
 	    assertFalse(userList.get(0).equals(u1));
 	  }
-	//@Test
+	@Test
 	// ZANE TAN
 	public void testAddCategory() {
 		
@@ -204,19 +204,16 @@ public class C206_CaseStudyTest {
 		// Given an empty list, after adding 1 new category, is the size of the list 1?
 		C206_CaseStudy.AddCategory(CategoryList, cat1);
 		assertEquals("Test if category arrayList size is 1?", 1, CategoryList.size());
-		
 		// check if the object matches the added object index in the arraylist
-		assertSame("Check that category 1 is added", cat1, CategoryList.get(0));
+		assertSame("Check that cat1 is added", cat1, CategoryList.get(0));
 		
-	    
 	    //test that fields are not null for name 
-	    assertNotNull(cat1.getName());
+	       assertNotNull(cat1.getName());
 	   
-	    
 	    // Given an empty list, after adding 1 more  new category, is the size of the list 2?
-	    C206_CaseStudy.AddCategory(CategoryList, cat2);
-		assertEquals("Test if category arraylist size is 2", 2, CategoryList.size());
-		assertSame("Test that Category 2 is added", cat2, CategoryList.get(1));
+	       C206_CaseStudy.AddCategory(CategoryList, cat2);
+	       assertEquals("Test if category arraylist size is 2", 2, CategoryList.size());
+	       assertSame("Test that cat2 is added", cat2, CategoryList.get(1));
 		
 		// test that error message is submitted if empty fields is submitted
 		// Test that a successful message will be displayed after adding category successfully.
@@ -226,12 +223,13 @@ public class C206_CaseStudyTest {
 	public void testRetrieveAllCategory() 
 	{
 		// Test if categorylist is not null but empty -boundary
-		assertNotNull("Test if there is valid category arraylist to retrieve item", CategoryList);
+		assertNotNull("Test if there is valid category arraylist to retrieve item from", CategoryList);
 				
 		//test if the list of category retrieved from the case study file is empty - boundary
 		String allCategories= C206_CaseStudy.retrieveAllCategory(CategoryList);
 		String testOutput = "";
 		assertEquals("Check that category arraylist ", testOutput, allCategories);
+	
 				
 		//Given an empty list, after adding 2 items, test if the size of the list is 2 - normal
 	    C206_CaseStudy.AddCategory(CategoryList, cat1);
@@ -242,24 +240,60 @@ public class C206_CaseStudyTest {
 		allCategories = C206_CaseStudy.retrieveAllCategory(CategoryList);
 		testOutput = String.format("%-10s \n","Sports");
 		testOutput += String.format("%-10s \n","Baking");
+		System.out.println(allCategories); // to check whether it has been added 
 		
 		// check if the objects aded inside are similar to the objects in test output
 		assertEquals("Check the objects inside the category list", testOutput, allCategories);
 		
 	}
-
 	@Test
         public void testDeleteCategory() {
 		// Test that the list is not null so that there is something for us to delete
-    	assertNotNull("Test that the list is not null so that there is something for us to delete", CategoryList);
-		// Test that after deleting 1 category, the size of the array is 0
-    	C206_CaseStudy.deleteCategory(CategoryList, cat1.getName());
-	    assertEquals("Check that Category arraylist size is 1", 0, CategoryList.size());
+    		assertNotNull("Test that the list is not null so that there is something for us to delete from", CategoryList);
+    		C206_CaseStudy.AddCategory(CategoryList, cat1);
+   	    	C206_CaseStudy.AddCategory(CategoryList, cat2);
+   	    	assertEquals("Test that Category arraylist size is 2", 2, CategoryList.size());
+   	    	assertSame("check that cat1 is added",cat1,CategoryList.get(0)); // check the size
+		// Test that after deleting 1 category(sports), the size of the array is 0
+    	    	C206_CaseStudy.removeCategory(CategoryList, cat1.getName());
+	    	assertEquals("Check that Category arraylist size is 1", 1, CategoryList.size());
 	   // Test that a successful message will be displayed after deleting successfully.
-	    // (category) is not found
-	   // Test that the category will be removed from categoryList
 	 	
 	}
+	@Test 
+	public void testUpdateCategory()
+	{
+		// Test that the list is not null 
+    		assertNotNull("Test that the list is not null so that there is something for us to update from", CategoryList);
+    		C206_CaseStudy.AddCategory(CategoryList, cat1);
+   	   	 C206_CaseStudy.AddCategory(CategoryList, cat2);
+   	   	 assertEquals("Test that Category arraylist size is 2", 2, CategoryList.size());
+   	    
+   	    	String testupdate = C206_CaseStudy.updateCategory(CategoryList,"Books", cat1.getName()); //upName//name // books is test data 
+   	    	String testOutput = "Successfully updated category name"; // passing criteria
+   	    	assertEquals(testupdate,testOutput); 
+   	    	System.out.println(testupdate); // if successfully updated
+   	    
+   	    	assertEquals(cat1.getName(),"Books"); // string // string
+   	    
+   	   
+    	
+	}
+	@Test 
+	public void testSearchbyPartial()
+	{
+		// Test that the list is not null so that there is something for us to delete
+    	    assertNotNull("Test that the list is not null so that there is something for us to search from", CategoryList);
+    	    C206_CaseStudy.AddCategory(CategoryList, cat1);
+   	    C206_CaseStudy.AddCategory(CategoryList, cat2);
+   	    assertEquals("Test that Category arraylist size is 2", 2, CategoryList.size());
+   	    
+   	    ArrayList<category> filterTest = C206_CaseStudy.searchCategory(CategoryList, "Spo"); // store the search data for cat 1
+   	    String testOutput = cat1.getName(); // for comparing later
+   	    assertEquals(testOutput, filterTest.get(0).getName()); // if the test output equals to the name searched // contains function
+		
+	}
+	
 	@Test 
 	// YIN MINN
 	  public void testAddItem()
