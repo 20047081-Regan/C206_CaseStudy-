@@ -123,12 +123,72 @@ public class C206_CaseStudy {
 								{
 									
 									viewAllcategories(CategoryList);
-						    			String name = removeCategory(CategoryList);
-									C206_CaseStudy.deleteCategory(CategoryList, name);
+						    			deleteCategory(CategoryList);
 
 
 
 								}
+								else if (categoryChoice == 4)
+						    		{
+						    			viewAllcategories(CategoryList);
+						    			String name = Helper.readString("Enter existing category name > ");
+						    			String UpName = Helper.readString("Enter new category name > ");
+						    			
+						    			
+						    			if(name.isEmpty())
+						    			{
+						    				System.out.println("Please type in existing category name");
+						    			}
+						    			else if(name.equals(UpName))
+						    			{
+						    				System.out.println("There is already a similar category name you are updating");
+						    			}
+						    			else
+						    			{
+						    				char CatUpdate = Helper.readChar("Are you sure you want to update this category name (Y/N) > ");
+						    				if(CatUpdate == 'Y' || CatUpdate == 'y')
+											{
+												String output = updateCategory(CategoryList,UpName,name);
+								    			System.out.println(output);
+												
+											}
+											else if(CatUpdate== 'N' || CatUpdate == 'n')
+											{
+												System.out.println("You have cancelled the updation of category ( " + name + " )");
+												
+											}
+											else
+											{
+												System.out.println("Invalid confirmation choice");
+											}
+						    				
+						    			}
+						    					
+						    				
+						    		}
+								else if(categoryChoice == 5)
+						    		{
+						    			viewAllcategories(CategoryList);
+						    			String name = Helper.readString("Enter existing category name > ");
+						    			
+						    			ArrayList<category> filtered = searchCategory(CategoryList,name);
+						    			
+						    			for(int i = 0; i < filtered.size();i++)
+						    			{
+						    				if(!filtered.get(i).getName().isEmpty())
+						    				{
+						    					System.out.println(filtered.get(i).getName());
+						    					
+						    					
+						    				}
+						    			}
+						    			if(filtered.isEmpty())
+						    			{
+						    				System.out.println("No category found after searching with partial/full name");
+						    			}
+						    				
+						    				
+						    		}
 							}
 							///////////////////YIN MINN/////////////////////////////////////
 							else if (option == 3)
@@ -517,11 +577,11 @@ public class C206_CaseStudy {
 	public static category inputCategory() 
 	{
 		
-	    String Name = Helper.readString("Enter Name of category (no numbers or special characters) >> ");
+		String Name = Helper.readString("Enter Name of category (no numbers or special characters) >> ");
 		
 	    category newCat = new category(Name);
 
-	   return newCat;
+		return newCat;
 	}
 	public static void AddCategory(ArrayList<category> CategoryList , category newCat) 
 	{
@@ -537,16 +597,16 @@ public class C206_CaseStudy {
 			{
 				if(CategoryList.get(i).getName().equalsIgnoreCase(newCat.getName()))
 				{
-					addchecker = true;
+					addchecker = true; // if there is duplicate name
 					System.out.println("Existing name found");
 					break;
 				}
 			}
-			if(addchecker == false)
+			if(addchecker == false) // if there isnt any duplicate name
 			{
 				
 				CategoryList.add(newCat);
-				System.out.println("Category Name ( " + newCat.getName() + " ) is added.");
+				System.out.println("Category Name ( " + newCat.getName() + " ) is added."); // success message
 								
 				
 			}
@@ -555,7 +615,8 @@ public class C206_CaseStudy {
 		}
 		
 		
-	}			 
+	}
+	
 	public static void viewAllcategories(ArrayList<category> CategoryList) {
 		
 		String output = String.format("%-10s \n", "CATEGORY NAME");
@@ -582,44 +643,95 @@ public class C206_CaseStudy {
 		return output;
 		
 	}
-	// delete category
-	public static String removeCategory(ArrayList<category> CategoryList) {
-		C206_CaseStudy.setHeader("DELETE MY CATEGORY");
-		String name = Helper.readString("Enter category name > ");
-		return name;
+	public static void removeCategory(ArrayList<category> CategoryList,String name) // the function for remove
+	{	
+		for(int i = 0 ; i < CategoryList.size();i++)
+		{
+			if(CategoryList.get(i).getName().equals(name))
+			{
+				CategoryList.remove(i);
+				System.out.println("Category (" + name + ") has been deleted !");
+				
+			}
+		}
+		
 	}
-	public static String deleteCategory(ArrayList<category> CategoryList, String name)
+	public static String deleteCategory(ArrayList<category> CategoryList)
 	{
 		boolean isExist = false;
 		String output = "";
+		
+		String name = Helper.readString("Enter category name > ");
+		
 		for(int i = 0; i < CategoryList.size();i++)
 		{
 			if(CategoryList.get(i).getName().equals(name))
 			{
 				char CatDelete = Helper.readChar("Are you sure that you want to delete this category  (Y/N) > ");
+				
 				if(CatDelete == 'Y' || CatDelete == 'y')
 				{
-					CategoryList.remove(i);
-					System.out.println("Category (" + name + ") has been deleted !");
+					removeCategory(CategoryList,name); // calling the function
+					
 				}
 				else if(CatDelete == 'N' || CatDelete == 'n')
 				{
 					output += "You have cancelled the deletion of category ( " + name + " )";
-					
-				}
-				else
-				{
-					output = "Please enter a valid name of category";
+					System.out.println(output);
 				}
 				isExist = true;
 			}
 		}
 		if(isExist != true)
 		{
-			output = "Deleted ( " + name + " )";
+			output = "Category ( " + name + ")  is not found";
 			System.out.println(output);
 		}
+		return name;
+	}
+        public static String updateCategory(ArrayList<category> CategoryList, String UpName,String name)
+	{
+		String output = "";
+		if(UpName.isEmpty())
+		{
+			output = "Please fill in the empty update name field";
+		}
+		else
+		{
+			for(int i = 0 ; i < CategoryList.size();i++)
+			{
+				if(CategoryList.get(i).getName().equalsIgnoreCase(name))
+				{
+					CategoryList.get(i).setName(UpName);
+					output = "Successfully updated category name";
+					break;
+					
+				}
+			}
+		}
 		return output;
+	}
+	public static ArrayList<category> searchCategory(ArrayList<category> CategoryList, String name) // returning arraylist
+	{
+		ArrayList<category> filteredSearch = new ArrayList<category>();
+		
+		if(name.isEmpty())
+		{
+			System.out.println("Please fill in all the fields");
+		}
+		else
+		{
+			for(int i = 0 ; i < CategoryList.size();i++)
+			{
+			  if(CategoryList.get(i).getName().toUpperCase().contains(name.toUpperCase()))
+			  {
+				  filteredSearch.add(CategoryList.get(i));
+				  System.out.println("Category filtered by partial/full name ( " + name + " )");
+			  }
+			  
+			}
+		}
+		return filteredSearch;
 		
 	}
 	
