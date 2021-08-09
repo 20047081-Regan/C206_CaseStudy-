@@ -188,11 +188,11 @@ public class C206_CaseStudyTest {
 		C206_CaseStudy.addNewBid(bidList, bid1);
 		assertEquals("Test if that bid arraylist size is 1?", 1, bidList.size());
 		
-		C206_CaseStudy.searchBids(bidList);
-
 		// Test if the expected output string same as the list of bid retrieved from the bidList.
-		String allBid = C206_CaseStudy.retrieveAllBid(bidList);
-		testOutput = String.format("%-10s %-25s %-20s %-20s %.2f\n", 1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90);
+		int index = bid1.getBidID() - 1;
+		String allBid = C206_CaseStudy.searchBids(bidList, index);
+		testOutput = String.format("%-10s %-25s %-20s %-20s %-10s\n", "BID ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "BID PRICE");
+		testOutput += String.format("%-10s %-25s %-20s %-20s %.2f\n", bid1.getBidID(), bid1.getItemName(), bid1.getSellerEmail(), bid1.getBuyerEmail(), bid1.getBidPrice());
 		assertEquals(testOutput, allBid);
 	}
 	
