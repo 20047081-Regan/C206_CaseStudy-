@@ -312,7 +312,6 @@ public class C206_CaseStudyTest {
 	       assertEquals("Test if category arraylist size is 2", 2, CategoryList.size());
 	       assertSame("Test that cat2 is added", cat2, CategoryList.get(1));
 		
-		// test that error message is submitted if empty fields is submitted
 		// Test that a successful message will be displayed after adding category successfully.
 	}
 		
@@ -385,7 +384,7 @@ public class C206_CaseStudyTest {
    	    C206_CaseStudy.AddCategory(CategoryList, cat2);
    	    assertEquals("Test that Category arraylist size is 2", 2, CategoryList.size());
    	    
-   	    ArrayList<category> filterTest = C206_CaseStudy.searchCategory(CategoryList, "Spo"); // store the search data for cat 1
+   	    ArrayList<category> filterTest = C206_CaseStudy.searchCategory(CategoryList, "Spo"); 
    	    String testOutput = cat1.getName(); // for comparing later
    	    assertEquals(testOutput, filterTest.get(0).getName()); // if the test output equals to the name searched // contains function
 		
