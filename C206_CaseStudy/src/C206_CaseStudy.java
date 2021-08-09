@@ -16,9 +16,19 @@ public class C206_CaseStudy {
 		CategoryList.add(new category("Sports");
 		CategoryList.add(new category("Cooking");
 		//-------------------------------------------------------------------BID--------------------------------------------------------------------------------------
+		//=========================================================== BUYER BID ===========================================================
 		ArrayList<Bid> bidList = new ArrayList<Bid>();
 		bidList.add(new Bid(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90));
 		bidList.add(new Bid(2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com", 10.80));
+		
+		//=========================================================== SELLER BID ==========================================================
+		ArrayList<Bid> sbidList = new ArrayList<Bid>();
+		sbidList.add(new Bid(1, "Socks", "seller1@mail.com", "buyer1@mail.com", 5.10, "NIL"));
+		sbidList.add(new Bid(2, "Cup", "seller1@mail.com", "buyer2@mail.com", 2.30, "NIL"));
+				 
+		//=========================================================== USER BID ================================================================
+		ArrayList<UserBid> sellerList = new ArrayList<UserBid>();
+		ArrayList<UserBid> buyerList = new ArrayList<UserBid>();
 		//-------------------------------------------------------------------DEAL-------------------------------------------------------------------------------------
 		ArrayList<Deal> dealList = new ArrayList<Deal>();
 		dealList.add(new Deal(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90, "01/01/2021"));
@@ -230,31 +240,125 @@ public class C206_CaseStudy {
 							///////////////////REGAN/////////////////////////////////////
 							else if (option == 4)
 							{
-								bidMenu();
-								int bidChoice = Helper.readInt("Enter an option > ");
+									boolean wantLogIn = true; // to ensure the option button all is link keep looping to be able to display the login menu.
+		loginMenu();
+		int option = Helper.readInt("LOGIN / REGISTER > ");
 
-								if(bidChoice == 1)
-								{
+		while (wantLogIn == true) {
+			if (option == 1) {
+				String uName = Helper.readString("Enter username > ");
+				String uPassword = Helper.readString("Enter password > ");
 
-									C206_CaseStudy.viewAllBids(bidList);
+				// TO CHECK the log in details.
+				boolean isSeller = C206_CaseStudy.doSellerLogin(uName, uPassword, sellerList);
+				boolean isBuyer = C206_CaseStudy.doBuyerLogin(uName, uPassword, buyerList);
 
-
-								}
-								else if(bidChoice == 2)
-								{
-
-									Bid newBid = inputBid(bidList);
-									C206_CaseStudy.addNewBid(bidList, newBid);
-
-								}
-								else if(bidChoice == 3)
-								{
-									viewAllBids(bidList);
-									int BidID = removeBid(bidList);
-									C206_CaseStudy.deleteMyBid(bidList, BidID);
+				// IF LOG IN DETAILS IS FALSE, enter again.
+				if (isSeller == false && isBuyer == false) {
+					System.out.println("Either your username or password was incorrect. Please try again!");
+					loginMenu();
+					option = Helper.readInt("LOGIN / REGISTER > ");
+				}
 
 
-								}
+				// IF LOG IN SUCCESSFULLY.
+				while (isBuyer == true) {
+					//			int option = 0;
+					//
+					//			while (option != OPTION_QUIT) {
+
+					C206_CaseStudy.buyerMenu();
+					int choice = Helper.readInt("Enter an option > ");
+
+					if (choice == 1) {
+						// View all bid
+						C206_CaseStudy.viewAllBids(bidList);
+					} else if (choice == 2) {
+						// Add a new bid
+						Bid newBid = inputBid(bidList);
+						C206_CaseStudy.addNewBid(bidList, newBid);
+					} else if (choice == 3) {
+						// Delete bid
+						C206_CaseStudy.deleteMyBid(bidList);
+					} else if (choice == 4) {
+						// Update bid
+						C206_CaseStudy.updateMyBid(bidList);
+					}
+					else if (choice == 5) {
+						C206_CaseStudy.searchBids(bidList);
+					}
+					else if (choice == 6) {
+						System.out.println("Bye! Hope to see you soon!");
+						isBuyer = false;
+						wantLogIn = false;
+					}
+					else {
+						System.out.println("INVALID OPTION ENTERED.");
+					}
+				}
+				
+				while (isSeller == true) {
+					C206_CaseStudy.sellerMenu();
+					int choice = Helper.readInt("Enter an option > ");
+					if (choice == 1) {
+						// view all current bid, those that is cancel will have a cancelled status beside.
+						C206_CaseStudy.viewAllSellerBids(sbidList);
+					}
+					else if (choice == 2) {
+						// cancel bid
+						C206_CaseStudy.updateCancelBid(sbidList);
+					}
+					else if (choice == 3) {
+						// quit
+						System.out.println("Bye! Hope to see you soon!");
+						isSeller = false;
+						wantLogIn = false;
+					}
+					else {
+						System.out.println("INVALID OPTION ENTERED.");
+					}
+				}
+
+			}
+			else if (option == 2) {
+				String username = Helper.readString("USERNAME > ");
+				String password = Helper.readString("PASSWORD > ");
+
+				// password validation
+				String pattern = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+				boolean matched = Pattern.matches(pattern, password);
+				while (matched != true) {
+					System.out.println("Password must be in minimum eight characters, at least one letter and one number");
+					password = Helper.readString("PASSWORD > ");
+					matched = Pattern.matches(pattern, password);
+				}
+
+				String role = Helper.readString("SELLER / BUYER > ");
+				if (role.equalsIgnoreCase("seller")) {
+					UserBid seller = new UserBid(username, password);
+					sellerList.add(seller);
+					System.out.println("Account registered succesfully!");
+					loginMenu();
+					option = Helper.readInt("LOGIN / REGISTER > ");
+				}
+				else if (role.equalsIgnoreCase("buyer")) {
+					UserBid buyer = new UserBid(username, password);
+					buyerList.add(buyer);
+					System.out.println("Account registered succesfully!");
+					loginMenu();
+					option = Helper.readInt("LOGIN / REGISTER > ");
+				}
+				else {
+					System.out.println("Invalid user role.");
+					loginMenu();
+					option = Helper.readInt("LOGIN / REGISTER > ");
+				}
+			}
+			else {
+				System.out.println("INVALID OPTION.");
+			}
+		}
+	}
 							}
 							///////////////////SHAO CHUN/////////////////////////////////////
 							else if (option == 5)
@@ -370,12 +474,22 @@ public class C206_CaseStudy {
 		Helper.line(80, "-");
 
 	}
-	public static void bidMenu()
-	{
-		C206_CaseStudy.setHeader("Campus Online Auction App");
-		System.out.println("1. View all bids");
-		System.out.println("2. Add a bid (based on id)");
-		System.out.println("3. Delete a bid (based on id)");
+	public static void sellerMenu() {
+		C206_CaseStudy.setHeader("WELCOME SELLER, to Campus Online Auction Shop (COAS)");
+		System.out.println("1. VIEW ALL BUYER'S BIDS");
+		System.out.println("2. CANCEL BIDS");
+		System.out.println("3. QUIT");
+		Helper.line(80, "-");
+	}
+	
+	public static void buyerMenu() {
+		C206_CaseStudy.setHeader("WELCOME BUYER, to Campus Online Auction Shop (COAS)");
+		System.out.println("1. VIEW BID");
+		System.out.println("2. ADD BID");
+		System.out.println("3. DELETE BID");
+		System.out.println("4. UPDATE BID");
+		System.out.println("5. SEARCH BID");
+		System.out.println("6. QUIT");
 		Helper.line(80, "-");
 	}
 	public static void dealMenu()
@@ -805,6 +919,29 @@ public class C206_CaseStudy {
 	}
 	//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// REGAN (BIDDING)
+	//=========================================================== VIEW =============================================================
+	public static String retrieveAllBid(ArrayList<Bid> bidList) {
+		String output = "";
+
+		for (int i = 0; i < bidList.size(); i++) {
+			output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
+		}
+		return output;
+	}
+	public static void viewAllBids(ArrayList<Bid> bidList) {
+		C206_CaseStudy.setHeader("VIEW ALL BIDS");
+		String output = "";
+		if (bidList.isEmpty()) {
+			output = "You have no existing bids at the moment.";
+		}
+		else {
+			output = String.format("%-10s %-25s %-20s %-20s %-10s\n", "BID ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "BID PRICE");
+			output += retrieveAllBid(bidList);
+		}
+		System.out.println(output);
+	}
+
+	//=========================================================== ADD =============================================================
 	public static Bid inputBid(ArrayList<Bid> bidList) {
 		C206_CaseStudy.setHeader("ADD BID");
 		int bidID = bidList.size() + 1;
@@ -847,34 +984,29 @@ public class C206_CaseStudy {
 		Bid newBid = new Bid(bidID, itemName, sellerEmail, buyerEmail, price);
 		return newBid;
 	}
+	
 	public static void addNewBid(ArrayList<Bid> bidList, Bid newBid) {
 		// add object into arrayList.
 		bidList.add(newBid);
 		System.out.println("Congratulations! You have successfully bid the item!");
 	}
 
-	// DELETE
-	public static int removeBid(ArrayList<Bid> bidList) {
+	//=========================================================== DELETE ===========================================================
+	public static int deleteMyBid(ArrayList<Bid> bidList) {
 		C206_CaseStudy.setHeader("DELETE MY BID");
-		int bidID = Helper.readInt("Enter Bid ID > ");
-		return bidID;
-	}
-
-	public static String deleteMyBid(ArrayList<Bid> bidList, int BidID) {
-		boolean found = false;
 		String output = "";
+		boolean found = false;
+		int bidID = Helper.readInt("Enter Bid ID > ");
+		
 		for (int i = 0; i < bidList.size(); i ++) {
-			if (BidID == bidList.get(i).getBidID()) {
-				int index = i + 1;
-				char confirm = Helper.readChar("Are you sure that you want to delete Bid ID " + index + "? (Y/N) > ");
+			if (bidID == bidList.get(i).getBidID()) {
+				char confirm = Helper.readChar("Are you sure that you want to delete Bid ID " + bidID + "? (Y/N) > ");
 				if (confirm == 'Y' || confirm == 'y') {
-					bidList.remove(i);
-					output = "You have successfully deleted Bid ID " + index;
-					System.out.println(output);
+					removeBid(bidList, bidID);
 					//bidList.get(i).setDeleted(true);
 				}
 				else if (confirm == 'N' || confirm == 'n') {
-					output = "You have cancelled the delete transaction for Bid ID " + index;
+					output = "You have cancelled the delete transaction for Bid ID " + bidID;
 					System.out.println(output);
 					//bidList.get(i).setDeleted(false);
 				}
@@ -888,32 +1020,249 @@ public class C206_CaseStudy {
 		}
 
 		if (found != true) {
-			output = String.format("Bid ID %d is not found.", BidID);
+			output = String.format("Bid ID %d is not found.", bidID);
 			System.out.println(output);
 		}
-		return output;
+		return bidID;
 	}
-	// VIEW
-	public static String retrieveAllBid(ArrayList<Bid> bidList) {
+	
+	public static void removeBid(ArrayList<Bid> bidList, int bidID) {
+		int index = bidID - 1;
+		bidList.remove(index);
+		String output = "You have successfully deleted Bid ID " + bidID;
+		System.out.println(output);
+	}
+	
+	//=========================================================== UPDATE ===========================================================
+	public static int updateMyBid (ArrayList<Bid> bidList) {
+		C206_CaseStudy.setHeader("UPDATE MY BID");
+		int bidID = Helper.readInt("Enter Bid ID > ");
+		boolean found = false;
 		String output = "";
+		
+		for (int i = 0; i < bidList.size(); i ++) {
+			if (bidID == bidList.get(i).getBidID()) {
+				String itemName = bidList.get(i).getItemName();
+				String sellerEmail = bidList.get(i).getSellerEmail();
+				String buyerEmail = bidList.get(i).getBuyerEmail();
+				double price = bidList.get(i).getBidPrice();
+				output = "Item name > " + itemName + "\nSeller email > " + sellerEmail + "\nBuyer email > " + buyerEmail + "\nCURRENT bid price: " + price;
+				System.out.println(output);
 
-		for (int i = 0; i < bidList.size(); i++) {
-			output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
+				char confirm = Helper.readChar("Are you sure that you want to update Bid ID " + bidID + "? (Y/N) > ");
+				if (confirm == 'y' || confirm == 'Y') {
+					double newPrice = Helper.readDouble("Enter NEW bid Price > ");
+					while (newPrice == 0) {
+						output = "Please enter a valid bid price.";
+						System.out.println(output);
+						newPrice = Helper.readDouble("Enter NEW bid Price > ");
+					}
+					if (newPrice <= price) {
+						output = "Buyer cannot set price lower than or equal to the current bid price.";
+						System.out.println(output);
+					}
+					else {
+						updateBid(bidList, bidID, newPrice);
+					}
+				}
+				else if (confirm == 'N' || confirm == 'n') {
+					output = "You have cancelled the update transaction for Bid ID " + bidID;
+					System.out.println(output);
+				}
+				else {
+					output = "Please enter valid values.";
+					System.out.println(output);
+				}
+				found = true;
+			}
+		}
+
+		if (found != true) {
+			output = String.format("Bid ID %d is not found.", bidID);
+			System.out.println(output);
+		}
+
+		return bidID;
+	}
+	
+	public static void updateBid(ArrayList<Bid> bidList, int bidID, double newPrice) {
+		int index = bidID - 1;
+		bidList.get(index).setBidPrice(newPrice);
+		String output = "You have successfully updated Bid ID " + bidID;
+		System.out.println(output);
+	}
+
+	//=========================================================== SEARCH ===========================================================
+	public static String searchAllBid(ArrayList<Bid> bidList) {
+		String output = "";
+		boolean found = false;
+		searchMenu();
+		int option = Helper.readInt("Enter > ");
+		if (option == 1) {
+			String itemName = Helper.readString("Enter Item Name: ");
+			while (itemName == "") {
+				System.out.println("Please do not submit empty fields.");
+				itemName = Helper.readString("Enter Item Name: ");
+			}
+			for (int i = 0; i < bidList.size(); i++) {
+				String itemN = itemName.toLowerCase();
+				String stored = bidList.get(i).getItemName().toLowerCase();
+				if (stored.contains(itemN)) {
+					output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
+					found = true;
+				}
+			}
+		}
+		else if (option == 2) {
+			String sellerE = Helper.readString("Enter Seller Email: ");
+			while (sellerE == "") {
+				System.out.println("Please do not submit empty fields.");
+				sellerE = Helper.readString("Enter Item Name: ");
+			}
+			for (int i = 0; i < bidList.size(); i++) {
+				String sellerMail = sellerE.toLowerCase();
+				String stored = bidList.get(i).getSellerEmail().toLowerCase();
+				if (stored.contains(sellerMail)) {
+					output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
+					found = true;
+				}
+			}
+		}
+		else {
+			output = "Invalid option entered.";
+		}
+		if (found == false) {
+			output = "No result found.";
 		}
 		return output;
 	}
-	public static void viewAllBids(ArrayList<Bid> bidList) {
-		C206_CaseStudy.setHeader("VIEW ALL BIDS");
+
+	public static void searchBids(ArrayList<Bid> bidList) {
+		C206_CaseStudy.setHeader("SEARCH MY BIDS");
 		String output = "";
 		if (bidList.isEmpty()) {
 			output = "You have no existing bids at the moment.";
 		}
 		else {
 			output = String.format("%-10s %-25s %-20s %-20s %-10s\n", "BID ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "BID PRICE");
-			output += retrieveAllBid(bidList);
+			output += searchAllBid(bidList);
 		}
 		System.out.println(output);
 	}
+
+	public static void searchMenu() {
+		System.out.println("DO YOU WANT TO SEARCH BY...");
+		System.out.println("1. ITEM NAME");
+		System.out.println("2. SELLER EMAIL");
+	}
+	
+	// ********************************************************** SELLER ************************************************************
+	
+	//=========================================================== VIEW ===========================================================
+	public static String retrieveAllSellerBid(ArrayList<Bid> sbidList) {
+		String output = "";
+
+		for (int i = 0; i < sbidList.size(); i++) {
+			output += String.format("%-10s %-25s %-20s %-20s %-20.2f %s\n", sbidList.get(i).getBidID(), sbidList.get(i).getItemName(), sbidList.get(i).getSellerEmail(), sbidList.get(i).getBuyerEmail(), sbidList.get(i).getBidPrice(), sbidList.get(i).getStatus());
+		}
+		return output;
+	}
+	public static void viewAllSellerBids(ArrayList<Bid> sbidList) {
+		C206_CaseStudy.setHeader("VIEW ALL BUYER'S BIDS");
+		String output = "";
+		if (sbidList.isEmpty()) {
+			output = "You have no existing bids at the moment.";
+		}
+		else {
+			output = String.format("%-10s %-25s %-20s %-20s %-20s %s\n", "BID ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "BID PRICE", "STATUS");
+			output += retrieveAllSellerBid(sbidList);
+		}
+		System.out.println(output);
+	}
+	
+
+	//======================================================== UPDATE CANCEL ===========================================================
+	public static int updateCancelBid (ArrayList<Bid> sbidList) {
+		C206_CaseStudy.setHeader("UPDATE MY BID");
+		int bidID = Helper.readInt("Enter Bid ID > ");
+		boolean found = false;
+		String output = "";
+		for (int i = 0; i < sbidList.size(); i ++) {
+			if (bidID == sbidList.get(i).getBidID()) {
+				String itemName = sbidList.get(i).getItemName();
+				String sellerEmail = sbidList.get(i).getSellerEmail();
+				String buyerEmail = sbidList.get(i).getBuyerEmail();
+				double price = sbidList.get(i).getBidPrice();
+				output = "Item name > " + itemName + "\nSeller email > " + sellerEmail + "\nBuyer email > " + buyerEmail + "\nCURRENT bid price: " + price;
+				System.out.println(output);
+
+				char confirm = Helper.readChar("Are you sure that you want to cancel Bid ID " + bidID + "? (Y/N) > ");
+				if (confirm == 'y' || confirm == 'Y') {
+					cancelBid(sbidList, bidID);
+				}
+				else if (confirm == 'N' || confirm == 'n') {
+					output = "You have cancelled the cancel transaction for Bid ID " + bidID;
+					System.out.println(output);
+				}
+				else {
+					output = "Please enter valid values.";
+					System.out.println(output);
+				}
+				found = true;
+			}
+		}
+
+		if (found != true) {
+			output = String.format("Bid ID %d is not found.", bidID);
+			System.out.println(output);
+		}
+
+		return bidID;
+	}
+	
+	public static void cancelBid(ArrayList<Bid> sbidList, int bidID) {
+		int index = bidID - 1;
+		sbidList.get(index).setStatus("CANCELLED");
+		System.out.println("You have successfully cancelled Bid ID " + bidID);
+	}
+
+	//=========================================================== SELLER LOGIN ===========================================================
+	public static boolean doSellerLogin(String uName, String uPassword, ArrayList<UserBid> sellerList)  {
+		boolean valid = false;
+		for (int i = 0; i < sellerList.size(); i ++) {
+			if (uName.equalsIgnoreCase(sellerList.get(i).getName()) && uPassword.equalsIgnoreCase(sellerList.get(i).getPassword())) {
+				valid = true;
+			}
+			else {
+				valid = false;
+			}
+		}
+		return valid;
+	}
+
+	//=========================================================== BUYER LOGIN ===========================================================
+	public static boolean doBuyerLogin(String uName, String uPassword, ArrayList<UserBid> buyerList) {
+		boolean valid = false;
+		for (int i = 0; i < buyerList.size(); i ++) {
+			if (uName.equalsIgnoreCase(buyerList.get(i).getName()) && uPassword.equalsIgnoreCase(buyerList.get(i).getPassword())) {
+				valid = true;
+			}
+			else {
+				valid = false;
+			}
+		}
+		return valid;
+	}
+
+	//=========================================================== LOGIN MENU ===========================================================
+	public static void loginMenu() {
+		Helper.line(30, "-");
+		System.out.println("WELCOME");
+		Helper.line(30, "-");
+		System.out.println("1. LOGIN");
+		System.out.println("2. REGISTER");
+	}
+
 	// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// SHAOCHUN (DEAL)
 	public static String retrieveAllDeal(ArrayList<Deal> dealList) {
