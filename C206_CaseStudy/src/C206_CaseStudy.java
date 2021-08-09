@@ -285,8 +285,7 @@ public class C206_CaseStudy {
 												C206_CaseStudy.updateMyBid(bidList);
 											}
 											else if (choice == 5) {
-												// Search bid
-												C206_CaseStudy.searchAllBid(bidList);
+												C206_CaseStudy.searchBids(bidList);
 											}
 											else if (choice == 6) {
 												System.out.println("Bye! Hope to see you soon!");
@@ -810,26 +809,37 @@ public static String deleteCategory(ArrayList<category> CategoryList)
 	return name;
 }
 public static String updateCategory(ArrayList<category> CategoryList, String UpName,String name)
-{
-	String output = "";
-	if(UpName.isEmpty())
 	{
-		output = "Please fill in the empty update name field";
-	}
-	else
-	{
-		for(int i = 0 ; i < CategoryList.size();i++)
+		String output = "";
+		for(int i = 0;i < CategoryList.size();i++)
 		{
-			if(CategoryList.get(i).getName().equalsIgnoreCase(name))
+			if(UpName.isEmpty())
 			{
-				CategoryList.get(i).setName(UpName);
-				output = "Successfully updated category name";
-				break;
-
+				output = "Please fill in the empty update name field";
 			}
+			else if(CategoryList.get(i).getName().equalsIgnoreCase(UpName))
+			{
+				output = "Please do not update any new name with an exisiting name of another category";
+				
+			}
+			else
+			{
+				for(int x = 0 ; x < CategoryList.size();x++)
+				{
+					if(CategoryList.get(x).getName().equals(name))
+					{
+						CategoryList.get(x).setName(UpName);
+						output = "Successfully updated category name";
+						break;
+						
+					}
+				}
+			}
+			
 		}
-	}
-	return output;
+		
+		
+		return output;
 }
 public static ArrayList<category> searchCategory(ArrayList<category> CategoryList, String name) // returning arraylist
 {
@@ -1099,71 +1109,68 @@ public static void updateBid(ArrayList<Bid> bidList, int bidID, double newPrice)
 }
 
 //=========================================================== SEARCH ===========================================================
-	public static int searchAllBid(ArrayList<Bid> bidList) {
-		boolean found = false;
-		searchMenu();
-		int i = 0;
-		int option = Helper.readInt("Enter > ");
-		if (option == 1) {
-			String itemName = Helper.readString("Enter Item Name: ");
-			while (itemName == "") {
-				System.out.println("Please do not submit empty fields.");
-				itemName = Helper.readString("Enter Item Name: ");
-			}
-			for (i = 0; i < bidList.size(); i++) {
-				String itemN = itemName.toLowerCase();
-				String stored = bidList.get(i).getItemName().toLowerCase();
-				if (stored.contains(itemN)) {
-					searchBids(bidList, i);
-					found = true;
-				}
-			}
+public static String searchAllBid(ArrayList<Bid> bidList) {
+	String output = "";
+	boolean found = false;
+	searchMenu();
+	int option = Helper.readInt("Enter > ");
+	if (option == 1) {
+		String itemName = Helper.readString("Enter Item Name: ");
+		while (itemName == "") {
+			System.out.println("Please do not submit empty fields.");
+			itemName = Helper.readString("Enter Item Name: ");
 		}
-		else if (option == 2) {
-			String sellerE = Helper.readString("Enter Seller Email: ");
-			while (sellerE == "") {
-				System.out.println("Please do not submit empty fields.");
-				sellerE = Helper.readString("Enter Item Name: ");
-			}
-			for (i = 0; i < bidList.size(); i++) {
-				String sellerMail = sellerE.toLowerCase();
-				String stored = bidList.get(i).getSellerEmail().toLowerCase();
-				if (stored.contains(sellerMail)) {
-					searchBids(bidList, i);
-					found = true;
-				}
+		for (int i = 0; i < bidList.size(); i++) {
+			String itemN = itemName.toLowerCase();
+			String stored = bidList.get(i).getItemName().toLowerCase();
+			if (stored.contains(itemN)) {
+				output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
+				found = true;
 			}
 		}
-		else {
-			String output = "Invalid option entered.";
-			System.out.println(output);
-		}
-		if (found == false) {
-			String output = "No result found.";
-			System.out.println(output);
-		}
-		return i;
 	}
+	else if (option == 2) {
+		String sellerE = Helper.readString("Enter Seller Email: ");
+		while (sellerE == "") {
+			System.out.println("Please do not submit empty fields.");
+			sellerE = Helper.readString("Enter Item Name: ");
+		}
+		for (int i = 0; i < bidList.size(); i++) {
+			String sellerMail = sellerE.toLowerCase();
+			String stored = bidList.get(i).getSellerEmail().toLowerCase();
+			if (stored.contains(sellerMail)) {
+				output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
+				found = true;
+			}
+		}
+	}
+	else {
+		output = "Invalid option entered.";
+	}
+	if (found == false) {
+		output = "No result found.";
+	}
+	return output;
+}
 
-	public static String searchBids(ArrayList<Bid> bidList, int i) {
-		C206_CaseStudy.setHeader("SEARCH MY BIDS");
-		String output = "";
-		if (bidList.isEmpty()) {
-			output = "You have no existing bids at the moment.";
-		}
-		else {
-			output = String.format("%-10s %-25s %-20s %-20s %-10s\n", "BID ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "BID PRICE");
-			output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
-		}
-		System.out.println(output);
-		return output;
+public static void searchBids(ArrayList<Bid> bidList) {
+	C206_CaseStudy.setHeader("SEARCH MY BIDS");
+	String output = "";
+	if (bidList.isEmpty()) {
+		output = "You have no existing bids at the moment.";
 	}
+	else {
+		output = String.format("%-10s %-25s %-20s %-20s %-10s\n", "BID ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "BID PRICE");
+		output += searchAllBid(bidList);
+	}
+	System.out.println(output);
+}
 
-	public static void searchMenu() {
-		System.out.println("DO YOU WANT TO SEARCH BY...");
-		System.out.println("1. ITEM NAME");
-		System.out.println("2. SELLER EMAIL");
-	}
+public static void searchMenu() {
+	System.out.println("DO YOU WANT TO SEARCH BY...");
+	System.out.println("1. ITEM NAME");
+	System.out.println("2. SELLER EMAIL");
+}
 
 // ********************************************************** SELLER ************************************************************
 
