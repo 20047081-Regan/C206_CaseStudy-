@@ -10,6 +10,8 @@ public class C206_CaseStudyTest {
 
 	private Bid bid1;
 	private Bid bid2;
+	private UserBid seller;
+	private UserBid buyer;
 	private category cat1;
 	private category cat2;
 	private User u1;
@@ -21,8 +23,9 @@ public class C206_CaseStudyTest {
 	private Item item1;
 	private Item item2;
 	
-
 	private ArrayList<Bid> bidList;
+	private ArrayList<UserBid> sellerList;
+	private ArrayList<UserBid> buyerList;
 	private ArrayList<category> CategoryList;
 	private ArrayList<User> userList;
 	private ArrayList<Deal> dealList;
@@ -36,9 +39,16 @@ public class C206_CaseStudyTest {
 	public void setUp() throws Exception {
 		// prepare test data
 		//==============================================================BID============================================================
-		bidList = new ArrayList<Bid>();
 		bid1 = new Bid(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90);
 		bid2 = new Bid(2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com",10.80);
+		bidList = new ArrayList<Bid>();
+		
+		seller = new UserBid("seller_lim", "password1");
+		buyer = new UserBid("buyer_lim", "password2");
+		sellerList = new ArrayList<UserBid>();
+		buyerList = new ArrayList<UserBid>();
+		sellerList.add(seller);
+		buyerList.add(buyer);
 		//==============================================================USER===========================================================
 		userList = new ArrayList<User>();
 		u1 = (new User("John Lim", "johnlim@C206.com", "12345abc", "Buyer"));
@@ -113,18 +123,105 @@ public class C206_CaseStudyTest {
 		assertEquals(testOutput, allBid);
 	}
 
-
 	@Test
 	public void testDeleteBid() {
 		// Test that the list is not null so that there is something for us to delete
 		assertNotNull("Test that the list is not null so that there is something for us to delete", bidList);
+		
+		// Given an empty bid list, after add two item, the size of the list is 2.
+		C206_CaseStudy.addNewBid(bidList, bid1);		
+		C206_CaseStudy.addNewBid(bidList, bid2);	
+		assertEquals("Test if that bid arraylist size is 2?", 2, bidList.size());
 
-		// Test that after deleting 1 item, the size of the array is 0.
-		C206_CaseStudy.deleteMyBid(bidList, bid1.getBidID());
-		assertEquals(0, bidList.size());
+		// The item just added is as same as the first item of the list
+		assertSame("Test that bid is added same as 1st item of the list?", bid1, bidList.get(0));
 
-		// Test that a successful message will be displayed after deleting successfully.
-		// Test that the bid will be removed from the bid list.
+		// Test that the field submitted is not null.
+		assertNotNull(bid1.getBidPrice());
+
+		// Test that after deleting 1 item, the size of the array is 1.
+		C206_CaseStudy.removeBid(bidList, bid1.getBidID());
+		assertEquals(1, bidList.size());
+	}
+	
+	@Test
+	public void testUpdateBid() {
+		// Test that the list is not null so that there is something for us to update
+		assertNotNull("Test that the list is not null so that there is something for us to update", bidList);
+				
+		// Given an empty bid list, after add one item, the size of the list is 1.
+		C206_CaseStudy.addNewBid(bidList, bid1);		
+		assertEquals("Test if that bid arraylist size is 1?", 1, bidList.size());
+
+		// The item just added is the same as the first item of the list
+		assertSame("Test that bid is added same as 1st item of the list?", bid1, bidList.get(0));
+
+		// Test that the field submitted is not null.
+		assertNotNull(bid1.getBidPrice());
+		assertNotNull(bid1.getBidID());
+		
+		// Test that the bid price will be updated successfully.
+		double userInput = 5.10;
+		C206_CaseStudy.updateBid(bidList,bid1.getBidID(), 5.10);
+		assertNotSame(userInput, bid1.getBidPrice()); // updated means the NEW PRICE different from the OLD PRICE.
+		
+//		// Test that the bid pice will not be updated successfully if it is lower than the current bid price
+//		C206_CaseStudy.updateMyBid(bidList, bid1.getBidID());
+//		assertSame(4.90, bid1.getBidPrice()); // remain as 4.90 = not updated. // not updated means new price and old price same.
+//		
+//		// Test that the bid pice will not be updated successfully if it is equal to the current bid price
+//		C206_CaseStudy.updateMyBid(bidList, bid1.getBidID());
+//		assertSame(4.90, bid1.getBidPrice()); // remain as 4.90 = not updated. // not updated means new price and old price same.
+	}
+	
+	@Test 
+	public void testRetrieveSearchBid() {
+		// Test if Item list is not null, so can be displayed
+		assertNotNull("Test if there is valid bid arraylist to be displayed", bidList);
+
+		// Test if the list of bids retrieved from the list is empty
+		String allBids = C206_CaseStudy.retrieveAllBid(bidList);
+		String testOutput = "";
+		assertEquals(testOutput, allBids);
+
+		// Given an empty list, after adding 1 item, test if the size of the list is 1
+		C206_CaseStudy.addNewBid(bidList, bid1);
+		assertEquals("Test if that bid arraylist size is 1?", 1, bidList.size());
+		
+		C206_CaseStudy.searchBids(bidList);
+
+		// Test if the expected output string same as the list of bid retrieved from the bidList.
+		String allBid = C206_CaseStudy.retrieveAllBid(bidList);
+		testOutput = String.format("%-10s %-25s %-20s %-20s %.2f\n", 1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90);
+		assertEquals(testOutput, allBid);
+	}
+	
+	@Test 
+	public void testCancelBid() {
+		// Test if Item list is not null, so can be cancel
+		assertNotNull("Test if there is valid bid arraylist to be displayed", bidList);
+
+		// Test if the list of bids retrieved from the list is empty
+		String allBids = C206_CaseStudy.retrieveAllBid(bidList);
+		String testOutput = "";
+		assertEquals(testOutput, allBids);
+
+		// Given an empty list, after adding 1 item, test if the size of the list is 1
+		C206_CaseStudy.addNewBid(bidList, bid1);
+		assertEquals("Test if that bid arraylist size is 1?", 1, bidList.size());
+		
+		C206_CaseStudy.cancelBid(bidList, bid1.getBidID());
+
+		// Test if the expected output string same as the list of bid retrieved from the bidList.
+		testOutput = String.format("%-10s %-25s %-20s %-20s %.2f\n", 1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90, "CANCELLED");
+		String actualOutput = String.format("%-10s %-25s %-20s %-20s %.2f\n", bid1.getBidID(), bid1.getItemName(), bid1.getSellerEmail(), bid1.getBuyerEmail(), bid1.getBidPrice(), bid1.getStatus());
+		assertEquals(testOutput, actualOutput);
+	}
+
+	@Test // TEST LOGIN
+	public void testLogin () {
+		assertTrue(C206_CaseStudy.doSellerLogin("seller_lim", "password1", sellerList));
+		assertTrue(C206_CaseStudy.doBuyerLogin("buyer_lim", "password2", buyerList));
 	}
 	
 	//------------------------------------------------------------------------- A.Elizabeth 20020036 ------------------------------------------------------------------------
