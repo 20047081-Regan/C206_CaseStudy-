@@ -462,6 +462,8 @@ public class C206_CaseStudy {
 		System.out.println("1. View all categories");
 		System.out.println("2. Add an category ");
 		System.out.println("3. Delete an category");
+		System.out.println("4. Update Category with new name");
+		System.out.println("5. Search Category with partial or full name");
 		Helper.line(80, "-");
 
 	}
