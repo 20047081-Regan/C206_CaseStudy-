@@ -285,7 +285,8 @@ public class C206_CaseStudy {
 												C206_CaseStudy.updateMyBid(bidList);
 											}
 											else if (choice == 5) {
-												C206_CaseStudy.searchBids(bidList);
+												// Search bid
+												C206_CaseStudy.searchAllBid(bidList);
 											}
 											else if (choice == 6) {
 												System.out.println("Bye! Hope to see you soon!");
