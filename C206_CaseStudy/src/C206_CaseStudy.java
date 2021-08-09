@@ -1,530 +1,1368 @@
-import static org.junit.Assert.*;
-
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+public class C206_CaseStudy {
 
-public class C206_CaseStudyTest {
+	public static void main(String[] args){
 
-	private Bid bid1;
-	private Bid bid2;
-	private UserBid seller;
-	private UserBid buyer;
-	private category cat1;
-	private category cat2;
-	private User u1;
-	private User u2;
-	private User u3;
-	private User u4;
-	private Deal deal1;
-	private Deal deal2;
-	private Item item1;
-	private Item item2;
-	
-	private ArrayList<Bid> bidList;
-	private ArrayList<UserBid> sellerList;
-	private ArrayList<UserBid> buyerList;
-	private ArrayList<category> CategoryList;
-	private ArrayList<User> userList;
-	private ArrayList<Deal> dealList;
-	private ArrayList<Item> itemList;
+		//------------------------------------------------------------------USER--------------------------------------------------------------------------------------
+		ArrayList<User> userList = new ArrayList<User>();
+		userList.add(new User("John Lim", "johnlim@C206.com", "12345abc", "Buyer"));
+		userList.add(new User("James Tan", "jamestan@C206.com", "12345abc", "Buyer"));
+		userList.add(new User("Susan Chan", "susanchan@C206.com", "12345abc", "Seller"));
+		userList.add(new User("Admin", "admin@C206.com", "admin123", "Admin"));
+		//----------------------------------------------------------------CATEGORIES----------------------------------------------------------------------------------
+		ArrayList<category> CategoryList = new ArrayList<category>();
+		CategoryList.add(new category("Sports"));
+		CategoryList.add(new category("Cooking"));
+		//-------------------------------------------------------------------BID--------------------------------------------------------------------------------------
+		//=========================================================== BUYER BID ===========================================================
+		ArrayList<Bid> bidList = new ArrayList<Bid>();
+		bidList.add(new Bid(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90));
+		bidList.add(new Bid(2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com", 10.80));
 
-	public C206_CaseStudyTest() {
-		super();
+		//=========================================================== SELLER BID ==========================================================
+		ArrayList<Bid> sbidList = new ArrayList<Bid>();
+		sbidList.add(new Bid(1, "Socks", "seller1@mail.com", "buyer1@mail.com", 5.10, "NIL"));
+		sbidList.add(new Bid(2, "Cup", "seller1@mail.com", "buyer2@mail.com", 2.30, "NIL"));
+
+		//=========================================================== USER BID ================================================================
+		ArrayList<UserBid> sellerList = new ArrayList<UserBid>();
+		ArrayList<UserBid> buyerList = new ArrayList<UserBid>();
+		//-------------------------------------------------------------------DEAL-------------------------------------------------------------------------------------
+		ArrayList<Deal> dealList = new ArrayList<Deal>();
+		dealList.add(new Deal(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90, "01/01/2021"));
+		dealList.add(new Deal(2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com", 10.80, "02/02/2021"));
+		//-------------------------------------------------------------------ITEM--------------------------------------------------------------------------------------
+		ArrayList<Item> itemList = new ArrayList<Item>();
+		itemList.add(new Item("Sony Laptop", "Sony Inspiron13", 100, "2021-08-03", "2021-08-04", 1));
+		itemList.add(new Item("Dell Laptop", "Dell Inspiron14", 150, "2021-08-05", "2021-08-06", 1));
+		//------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+		while(true)
+		{ 
+			LoginMenu();
+			int loginOption = 0;
+
+			int loginInvalid = 3;
+
+			while (loginOption != loginInvalid)
+			{
+				loginOption = Helper.readInt("Enter an login option > ");
+
+				if(loginOption == 1)
+				{
+					String uName = Helper.readString("Enter username > ");
+					String uPassword = Helper.readString("Enter password > ");
+
+					boolean validUser = C206_CaseStudy.dologin(userList,uName, uPassword);
+
+					if(validUser == false)
+					{
+						System.out.println("Either your name or password was incorrect. Please try again!");
+						LoginMenu();
+					}
+					while(validUser)
+					{
+
+						int option = 0;
+
+
+
+						int OPTION_QUIT = 6;
+						while(option != OPTION_QUIT){
+
+							mainmenu();
+							option = Helper.readInt("Enter your option > ");
+							///////////////////ELIZABETH/////////////////////////////////////
+							if(option == 1) // part 1
+							{
+								userMenu();
+								int userChoice = Helper.readInt("Enter an option > ");
+								if (userChoice == 1) // view
+								{
+									viewAllUsers(userList);
+								}
+								else if (userChoice == 2) // add
+								{
+									User newUser = inputUser(userList);
+									addUser(userList, newUser);
+								}
+								else if (userChoice == 3) // delete
+								{
+									C206_CaseStudy.setHeader("DELETE USER");
+									viewAllUsers(userList);
+									String email = Helper.readString("Enter a user email > ");
+									deleteUser(userList, email);
+									validUser = false;
+									LoginMenu();
+									break;
+								}
+							}
+							/////////////////// ZANE /////////////////////////////////////
+							else if (option == 2)
+							{
+								categoryMenu();
+								int categoryChoice = Helper.readInt("Enter an option > ");
+
+								if(categoryChoice == 1)
+								{
+									Helper.line(30, "-");
+									System.out.println("CATEGORY LIST");
+									Helper.line(30, "-");
+
+									viewAllcategories(CategoryList);
+
+
+								}
+								else if (categoryChoice == 2)
+								{
+									Helper.line(30, "-");
+									System.out.println("ADD CATEGORY");
+									Helper.line(30, "-");
+
+									category newCat = inputCategory();// store inside object 
+
+									AddCategory(CategoryList, newCat);
+
+
+
+								}
+								else if (categoryChoice == 3)
+								{
+
+									viewAllcategories(CategoryList);
+									deleteCategory(CategoryList);
+
+
+
+								}
+								else if (categoryChoice == 4)
+								{
+									viewAllcategories(CategoryList);
+									String name = Helper.readString("Enter existing category name > ");
+									String UpName = Helper.readString("Enter new category name > ");
+
+
+									if(name.isEmpty())
+									{
+										System.out.println("Please type in existing category name");
+									}
+									else if(name.equals(UpName))
+									{
+										System.out.println("There is already a similar category name you are updating");
+									}
+									else
+									{
+										char CatUpdate = Helper.readChar("Are you sure you want to update this category name (Y/N) > ");
+										if(CatUpdate == 'Y' || CatUpdate == 'y')
+										{
+											String output = updateCategory(CategoryList,UpName,name);
+											System.out.println(output);
+
+										}
+										else if(CatUpdate== 'N' || CatUpdate == 'n')
+										{
+											System.out.println("You have cancelled the updation of category ( " + name + " )");
+
+										}
+										else
+										{
+											System.out.println("Invalid confirmation choice");
+										}
+
+									}
+
+
+								}
+								else if(categoryChoice == 5)
+								{
+									viewAllcategories(CategoryList);
+									String name = Helper.readString("Enter existing category name > ");
+
+									ArrayList<category> filtered = searchCategory(CategoryList,name);
+
+									for(int i = 0; i < filtered.size();i++)
+									{
+										if(!filtered.get(i).getName().isEmpty())
+										{
+											System.out.println(filtered.get(i).getName());
+
+
+										}
+									}
+									if(filtered.isEmpty())
+									{
+										System.out.println("No category found after searching with partial/full name");
+									}
+
+
+								}
+							}
+							///////////////////YIN MINN/////////////////////////////////////
+							else if (option == 3)
+							{
+								itemMenu();
+								int itemChoice = Helper.readInt("Enter an option > ");
+
+								if(itemChoice == 1)
+								{
+									Helper.line(30,  "-");
+									System.out.println("ITEM LIST");
+									Helper.line(30,  "-");
+
+									viewAllItems(itemList);
+
+								}
+								else if(itemChoice == 2)
+								{
+									Helper.line(30,  "-");
+									System.out.println("ADD ITEM");
+									Helper.line(30,  "-");
+
+									Item newItem = inputItem();
+									addItem(itemList, newItem);
+
+								}
+								else if(itemChoice == 3)
+								{
+									Helper.line(30,  "-");
+									System.out.println("DELETE ITEM");
+									Helper.line(30,  "-");
+
+									viewAllItems(itemList);
+									String name = Helper.readString("Enter an item name: ");
+									deleteItem(itemList, name);
+
+								}
+							}
+							///////////////////REGAN/////////////////////////////////////
+							else if (option == 4)
+							{
+								boolean wantLogIn = true; // to ensure the option button all is link keep looping to be able to display the login menu.
+								loginMenu();
+								int selection = Helper.readInt("LOGIN / REGISTER > ");
+
+								while (wantLogIn == true) {
+									if (selection == 1) {
+										String userName = Helper.readString("Enter username > ");
+										String userPassword = Helper.readString("Enter password > ");
+
+										// TO CHECK the log in details.
+										boolean isSeller = C206_CaseStudy.doSellerLogin(userName, userPassword, sellerList);
+										boolean isBuyer = C206_CaseStudy.doBuyerLogin(userName, userPassword, buyerList);
+
+										// IF LOG IN DETAILS IS FALSE, enter again.
+										if (isSeller == false && isBuyer == false) {
+											System.out.println("Either your username or password was incorrect. Please try again!");
+											loginMenu();
+											selection = Helper.readInt("LOGIN / REGISTER > ");
+										}
+
+
+										// IF LOG IN SUCCESSFULLY.
+										while (isBuyer == true) {
+											//			int option = 0;
+											//
+											//			while (option != OPTION_QUIT) {
+
+											C206_CaseStudy.buyerMenu();
+											int choice = Helper.readInt("Enter an option > ");
+
+											if (choice == 1) {
+												// View all bid
+												C206_CaseStudy.viewAllBids(bidList);
+											} else if (choice == 2) {
+												// Add a new bid
+												Bid newBid = inputBid(bidList);
+												C206_CaseStudy.addNewBid(bidList, newBid);
+											} else if (choice == 3) {
+												// Delete bid
+												C206_CaseStudy.deleteMyBid(bidList);
+											} else if (choice == 4) {
+												// Update bid
+												C206_CaseStudy.updateMyBid(bidList);
+											}
+											else if (choice == 5) {
+												C206_CaseStudy.searchBids(bidList);
+											}
+											else if (choice == 6) {
+												System.out.println("Bye! Hope to see you soon!");
+												isBuyer = false;
+												wantLogIn = false;
+											}
+											else {
+												System.out.println("INVALID OPTION ENTERED.");
+											}
+										}
+
+										while (isSeller == true) {
+											C206_CaseStudy.sellerMenu();
+											int choice = Helper.readInt("Enter an option > ");
+											if (choice == 1) {
+												// view all current bid, those that is cancel will have a cancelled status beside.
+												C206_CaseStudy.viewAllSellerBids(sbidList);
+											}
+											else if (choice == 2) {
+												// cancel bid
+												C206_CaseStudy.updateCancelBid(sbidList);
+											}
+											else if (choice == 3) {
+												// quit
+												System.out.println("Bye! Hope to see you soon!");
+												isSeller = false;
+												wantLogIn = false;
+											}
+											else {
+												System.out.println("INVALID OPTION ENTERED.");
+											}
+										}
+
+									}
+									else if (selection == 2) {
+										String username = Helper.readString("USERNAME > ");
+										String password = Helper.readString("PASSWORD > ");
+
+										// password validation
+										String pattern = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
+										boolean matched = Pattern.matches(pattern, password);
+										while (matched != true) {
+											System.out.println("Password must be in minimum eight characters, at least one letter and one number");
+											password = Helper.readString("PASSWORD > ");
+											matched = Pattern.matches(pattern, password);
+										}
+
+										String role = Helper.readString("SELLER / BUYER > ");
+										if (role.equalsIgnoreCase("seller")) {
+											UserBid seller = new UserBid(username, password);
+											sellerList.add(seller);
+											System.out.println("Account registered succesfully!");
+											selection = 1;
+										}
+										else if (role.equalsIgnoreCase("buyer")) {
+											UserBid buyer = new UserBid(username, password);
+											buyerList.add(buyer);
+											System.out.println("Account registered succesfully!");
+											selection = 1;
+										}
+										else {
+											System.out.println("Invalid user role.");
+											loginMenu();
+											option = Helper.readInt("LOGIN / REGISTER > ");
+										}
+									}
+									else {
+										System.out.println("INVALID OPTION.");
+									}
+								}
+							}
+						///////////////////SHAO CHUN/////////////////////////////////////
+						else if (option == 5)
+						{
+							dealMenu();
+							int dealChoice = Helper.readInt("Enter an option > ");
+
+							if(dealChoice== 1)
+							{
+								// View all bid
+								viewAllDeals(dealList);
+
+							}
+							else if(dealChoice == 2)
+							{
+								// Add a new bid
+								Deal newDeal = inputDeal(dealList);
+								addNewDeal(dealList, newDeal);
+
+							}
+							else if(dealChoice == 3)
+							{
+								// Delete bid
+								viewAllDeals(dealList);
+								int dealID = removeDeal(dealList);
+								deleteDeal(dealList, dealID);
+
+							}
+
+						}
+						else if (option == OPTION_QUIT)
+						{
+							System.out.println("Goodbye");
+							validUser = false;
+							LoginMenu();
+
+
+						}
+						else
+						{
+							System.out.println("Invalid option");
+
+						}
+					}
+
+				}
+				}
+
+			else if(loginOption == 2)
+			{
+				User newUser = inputUser(userList);
+				addUser(userList, newUser);
+				LoginMenu();
+			}
+			else if(loginOption == loginInvalid)
+			{
+				System.out.println("Goodbye");
+
+
+			}
+			else
+			{
+				System.out.println("Invalid option");
+			}
+		}
+
+
 	}
 
-	@Before
-	public void setUp() throws Exception {
-		// prepare test data
-		//==============================================================BID============================================================
-		bid1 = new Bid(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90);
-		bid2 = new Bid(2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com",10.80);
-		bidList = new ArrayList<Bid>();
-		
-		seller = new UserBid("seller_lim", "password1");
-		buyer = new UserBid("buyer_lim", "password2");
-		sellerList = new ArrayList<UserBid>();
-		buyerList = new ArrayList<UserBid>();
-		sellerList.add(seller);
-		buyerList.add(buyer);
-		//==============================================================USER===========================================================
-		userList = new ArrayList<User>();
-		u1 = (new User("John Lim", "johnlim@C206.com", "12345abc", "Buyer"));
-		u2 = (new User("James Tan", "jamestan@C206.com", "12345abc", "Buyer"));
-		u3 = (new User("Susan Chan", "susanchan@C206.com", "12345abc", "Seller"));
-		u4 = (new User("Admin", "admin@C206.com", "admin123", "Admin"));
-		//=============================================================CATEGORY========================================================
-		CategoryList = new ArrayList<category>();
-		cat1 = new category("Sports");
-		cat2 = new category("Baking");
-		//===============================================================DEAL==========================================================
-		dealList = new ArrayList<Deal>();
-		deal1 = new Deal(1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90, "01/01/2021");
-		deal2 = new Deal(2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com", 10.80, "02/02/2021");
-		//===============================================================ITEM==========================================================
-		itemList = new ArrayList<Item>();
-	    item1 = new Item("Sony Laptop", "Sony Inspiron13", 100, "2021-08-03", "2021-08-04", 1);
-	    item2 = new Item("Dell Laptop", "Dell Inspiron14", 150, "2021-08-05", "2021-08-06", 1);
 
-	}
+}
 
-	@Test
-	public void c206_test() {
-		//fail("Not yet implemented"); 
-		assertTrue("C206_CaseStudy_SampleTest ", true);
-	}
-	@Test 
-	// REGAN LEE
-	public void testAddBid() {
-		// Item list is not null, so that can add a new item
-		assertNotNull("Test if there is valid bid arraylist to add to", bidList);
+// program layouts
+public static void mainmenu()
+{	
+	C206_CaseStudy.setHeader("Campus Online Auction App");
+	System.out.println("1. User functions");
+	System.out.println("2. Category functions");
+	System.out.println("3. Item functions");
+	System.out.println("4. Bidding functions");
+	System.out.println("5. Dealing functions");
+	System.out.println("6. Quit App");
+	Helper.line(80, "-");
+}
+public static void adminMenu()
+{
 
-		// Given an empty bid list, after add one item, the size of the list is 1.
-		C206_CaseStudy.addNewBid(bidList, bid1);		
-		assertEquals("Test if that bid arraylist size is 1?", 1, bidList.size());
+	Helper.line(30, "-");
+	System.out.println("Campus Online Auction App -ADMIN");
+	Helper.line(30, "-");
 
-		// The item just added is as same as the first item of the list
-		assertSame("Test that bid is added same as 1st item of the list?", bid1, bidList.get(0));
+	System.out.println("1. View all students");
+	System.out.println("2. Add new student");
+	System.out.println("3. Delete student");
+	System.out.println("4. Log out");
 
-		// Test that the field submitted is not null.
-		assertNotNull(bid1.getBidPrice());
-		assertNotNull(bid1.getBuyerEmail());
-		assertNotNull(bid1.getItemName());
-		assertNotNull(bid1.getSellerEmail());
+}
+public static void categoryMenu()
+{
+	C206_CaseStudy.setHeader("Campus Online Auction App");
+	System.out.println("1. View all categories");
+	System.out.println("2. Add an category ");
+	System.out.println("3. Delete an category");
+	System.out.println("4. Update Category with new name");
+	System.out.println("5. Search Category with partial or full name");
+	Helper.line(80, "-");
 
-		// Test that an error message will be displayed after submitting if there are empty fields.
-		// Test that a successful message will be displayed after submitting, if there are no empty fields.
-	}
+}
+public static void itemMenu()
+{
+	C206_CaseStudy.setHeader("Campus Online Auction App");
+	System.out.println("1. View all items");
+	System.out.println("2. Add an item");
+	System.out.println("3. Delete an item");
+	Helper.line(80, "-");
 
-	@Test
-	public void testRetrieveAllBid() {
-		// Test if Item list is not null, so can be displayed
-		assertNotNull("Test if there is valid bid arraylist to be displayed", bidList);
+}
+public static void sellerMenu() {
+	C206_CaseStudy.setHeader("WELCOME SELLER, to Campus Online Auction Shop (COAS)");
+	System.out.println("1. VIEW ALL BUYER'S BIDS");
+	System.out.println("2. CANCEL BIDS");
+	System.out.println("3. QUIT");
+	Helper.line(80, "-");
+}
 
-		// Test if the list of bids retrieved from the list is empty
-		String allBids = C206_CaseStudy.retrieveAllBid(bidList);
-		String testOutput = "";
-		assertEquals(testOutput, allBids);
-		//		String notFound = "You have no existing bids at the moment.";
-		//		assertSame(notFound,C206_CaseStudy.viewAllBids(bidList));
-		//		assertTrue(displayError());
+public static void buyerMenu() {
+	C206_CaseStudy.setHeader("WELCOME BUYER, to Campus Online Auction Shop (COAS)");
+	System.out.println("1. VIEW BID");
+	System.out.println("2. ADD BID");
+	System.out.println("3. DELETE BID");
+	System.out.println("4. UPDATE BID");
+	System.out.println("5. SEARCH BID");
+	System.out.println("6. QUIT");
+	Helper.line(80, "-");
+}
+public static void dealMenu()
+{
+	C206_CaseStudy.setHeader("Campus Online Auction App");
+	System.out.println("1. View all deals");
+	System.out.println("2. Add a deal(based on id)");
+	System.out.println("3. Delete a deal(based on id)");
+	Helper.line(80, "-");
 
-		// Given an empty list, after adding 2 items, test if the size of the list is 2
-		C206_CaseStudy.addNewBid(bidList, bid1);
-		C206_CaseStudy.addNewBid(bidList, bid2);
-		assertEquals("Test if that bid arraylist size is 2?", 2, bidList.size());
+}
+public static void userMenu()
+{
+	C206_CaseStudy.setHeader("Campus Online Auction App");
+	System.out.println("1. View all users");
+	System.out.println("2. Add a user");
+	System.out.println("3. Delete a User(based on email)");
+	Helper.line(80, "-");
 
-		// Test if the expected output string same as the list of bid retrieved from the bidList.
-		String allBid = C206_CaseStudy.retrieveAllBid(bidList);
-		testOutput = String.format("%-10s %-25s %-20s %-20s %.2f\n", 1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90);
-		testOutput += String.format("%-10s %-25s %-20s %-20s %.2f\n",2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com", 10.80);
-		assertEquals(testOutput, allBid);
-	}
+}
+public static void LoginMenu()
+{
+	C206_CaseStudy.setHeader("Campus Online Auction App");
+	System.out.println("1. Login");
+	System.out.println("2. Register");
+	System.out.println("3. Quit");
 
-	@Test
-	public void testDeleteBid() {
-		// Test that the list is not null so that there is something for us to delete
-		assertNotNull("Test that the list is not null so that there is something for us to delete", bidList);
-		
-		// Given an empty bid list, after add two item, the size of the list is 2.
-		C206_CaseStudy.addNewBid(bidList, bid1);		
-		C206_CaseStudy.addNewBid(bidList, bid2);	
-		assertEquals("Test if that bid arraylist size is 2?", 2, bidList.size());
+}
+public static void setHeader(String header)
+{
+	Helper.line(80, "-");
+	System.out.println(header);
+	Helper.line(80, "-");
+}
+public static boolean dologin(ArrayList<User> UserList, String uName, String uPassword) 
+{
+	boolean isLogin = false;
 
-		// The item just added is as same as the first item of the list
-		assertSame("Test that bid is added same as 1st item of the list?", bid1, bidList.get(0));
-
-		// Test that the field submitted is not null.
-		assertNotNull(bid1.getBidPrice());
-
-		// Test that after deleting 1 item, the size of the array is 1.
-		C206_CaseStudy.removeBid(bidList, bid1.getBidID());
-		assertEquals(1, bidList.size());
-	}
-	
-	@Test
-	public void testUpdateBid() {
-		// Test that the list is not null so that there is something for us to update
-		assertNotNull("Test that the list is not null so that there is something for us to update", bidList);
-				
-		// Given an empty bid list, after add one item, the size of the list is 1.
-		C206_CaseStudy.addNewBid(bidList, bid1);		
-		assertEquals("Test if that bid arraylist size is 1?", 1, bidList.size());
-
-		// The item just added is the same as the first item of the list
-		assertSame("Test that bid is added same as 1st item of the list?", bid1, bidList.get(0));
-
-		// Test that the field submitted is not null.
-		assertNotNull(bid1.getBidPrice());
-		assertNotNull(bid1.getBidID());
-		
-		// Test that the bid price will be updated successfully.
-		double userInput = 5.10;
-		C206_CaseStudy.updateBid(bidList,bid1.getBidID(), 5.10);
-		assertNotSame(userInput, bid1.getBidPrice()); // updated means the NEW PRICE different from the OLD PRICE.
-		
-//		// Test that the bid pice will not be updated successfully if it is lower than the current bid price
-//		C206_CaseStudy.updateMyBid(bidList, bid1.getBidID());
-//		assertSame(4.90, bid1.getBidPrice()); // remain as 4.90 = not updated. // not updated means new price and old price same.
-//		
-//		// Test that the bid pice will not be updated successfully if it is equal to the current bid price
-//		C206_CaseStudy.updateMyBid(bidList, bid1.getBidID());
-//		assertSame(4.90, bid1.getBidPrice()); // remain as 4.90 = not updated. // not updated means new price and old price same.
-	}
-	
-	@Test 
-	public void testRetrieveSearchBid() {
-		// Test if Item list is not null, so can be displayed
-		assertNotNull("Test if there is valid bid arraylist to be displayed", bidList);
-
-		// Test if the list of bids retrieved from the list is empty
-		String allBids = C206_CaseStudy.retrieveAllBid(bidList);
-		String testOutput = "";
-		assertEquals(testOutput, allBids);
-
-		// Given an empty list, after adding 1 item, test if the size of the list is 1
-		C206_CaseStudy.addNewBid(bidList, bid1);
-		assertEquals("Test if that bid arraylist size is 1?", 1, bidList.size());
-		
-		C206_CaseStudy.searchBids(bidList);
-
-		// Test if the expected output string same as the list of bid retrieved from the bidList.
-		String allBid = C206_CaseStudy.retrieveAllBid(bidList);
-		testOutput = String.format("%-10s %-25s %-20s %-20s %.2f\n", 1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90);
-		assertEquals(testOutput, allBid);
-	}
-	
-	@Test 
-	public void testCancelBid() {
-		// Test if Item list is not null, so can be cancel
-		assertNotNull("Test if there is valid bid arraylist to be displayed", bidList);
-
-		// Test if the list of bids retrieved from the list is empty
-		String allBids = C206_CaseStudy.retrieveAllBid(bidList);
-		String testOutput = "";
-		assertEquals(testOutput, allBids);
-
-		// Given an empty list, after adding 1 item, test if the size of the list is 1
-		C206_CaseStudy.addNewBid(bidList, bid1);
-		assertEquals("Test if that bid arraylist size is 1?", 1, bidList.size());
-		
-		C206_CaseStudy.cancelBid(bidList, bid1.getBidID());
-
-		// Test if the expected output string same as the list of bid retrieved from the bidList.
-		testOutput = String.format("%-10s %-25s %-20s %-20s %.2f\n", 1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90, "CANCELLED");
-		String actualOutput = String.format("%-10s %-25s %-20s %-20s %.2f\n", bid1.getBidID(), bid1.getItemName(), bid1.getSellerEmail(), bid1.getBuyerEmail(), bid1.getBidPrice(), bid1.getStatus());
-		assertEquals(testOutput, actualOutput);
-	}
-
-	@Test // TEST LOGIN
-	public void testLogin () {
-		assertTrue(C206_CaseStudy.doSellerLogin("seller_lim", "password1", sellerList));
-		assertTrue(C206_CaseStudy.doBuyerLogin("buyer_lim", "password2", buyerList));
-	}
-	
-	//------------------------------------------------------------------------- A.Elizabeth 20020036 ------------------------------------------------------------------------
-	//============================================================================ @Test ---> USER ==========================================================================
-	@Test
-	public void testAddUser()
+	for(int i = 0 ; i < UserList.size();i++)
 	{
-		// userList is not null, so that can add a new user
-		assertNotNull("Test if there is a valid userList arrayList to add to", userList);
-		
-		// Given an empty list, after adding 1 user, is the size of the list 1?
-		C206_CaseStudy.addUser(userList, u1);
-		assertEquals("Test if User arrayList size is 1?", 1, userList.size());
-		
-		// Is the user just added the same as the first user of the list?
-		assertSame("Test if user added is the same as 1st user of the list?", u1, userList.get(0));
-		
-		// Add more users and test if the size of userList is 5?
-		C206_CaseStudy.addUser(userList, u2);
-		C206_CaseStudy.addUser(userList, u3);
-		C206_CaseStudy.addUser(userList, u4);
-		assertEquals("Test if User arrayList size is 4.", 4, userList.size());
-		
-		
+		if(UserList.get(i).getName().equalsIgnoreCase(uName) && UserList.get(i).getPassword().equalsIgnoreCase(uPassword))
+		{
+			isLogin = true;
+			break;
+		}
+
 	}
-	
-	@Test
-	public void testRetrieveAllUsers()
+	return isLogin;	
+
+}
+//------------------------------------------------------------------- A. Elizabeth 20020036 -----------------------------------------------------------------------------
+//======================================================================= USER OPTIONS ==================================================================================
+public static boolean notExist(ArrayList<User> userList, String name)
+{
+	boolean exist = false;
+	for(int e = 0; e < userList.size(); e++)
 	{
-		// Test if the userList is not null but empty, so that new user can be added.
-		assertNotNull("Test if there is valid User arrayList to add to", userList);
-		
-		// Test if the list of users retrieved from the CaseStudy is empty
-		String allUsers = C206_CaseStudy.retrieveAllUsers(userList);
-		String testOutput = "";
-		assertEquals("Check that ViewAllUsers", testOutput, allUsers);
-		
-		// Given an empty list, after adding 4 items, test if the size of the list is 4
-		C206_CaseStudy.addUser(userList, u1);
-		C206_CaseStudy.addUser(userList, u2);
-		C206_CaseStudy.addUser(userList, u3);
-		C206_CaseStudy.addUser(userList, u4);
-		assertEquals("Test if that User arrayList size is 4?", 4, userList.size());
-		
-		// Test if the expected out put string is same as the list of users retrieved from the CaseStudy
-		allUsers = C206_CaseStudy.retrieveAllUsers(userList);
-		
-		testOutput = String.format("%-10s %-20s %-10s\n", "John Lim", "johnlim@C206.com", "Buyer");
-		testOutput += String.format("%-10s %-20s %-10s\n", "James Tan", "jamestan@C206.com", "Buyer");
-		testOutput += String.format("%-10s %-20s %-10s\n", "Susan Chan", "susanchan@C206.com", "Seller");
-		testOutput += String.format("%-10s %-20s %-10s\n", "Admin", "admin@C206.com", "Admin");
+		if(userList.get(e).getName().equalsIgnoreCase(name))
+		{
+			exist = false;
+			break;
+		}
+		else
+		{
+			exist = true;
+		}
+	}
+	return exist;
+}
+//========================================================================= ADD USER ====================================================================================
+public static User inputUser(ArrayList<User> userList) {
+	C206_CaseStudy.setHeader("ADD USER");
 
-		assertEquals("Check ViewAllUsers", testOutput, allUsers);	 	 
-	}
-	
-	@Test
-	  public void testDoDeleteUser()
-	  {
-	    assertNotNull("Test that the userList is not null", userList);
-	    
-	    C206_CaseStudy.addUser(userList, u1);
-	    C206_CaseStudy.addUser(userList, u2);
-	    
-	    assertEquals("Test that userList size is 2", 2, userList.size());
-	    
-	    assertTrue(userList.get(0).equals(u1));
-	    C206_CaseStudy.doDeleteUser(userList, "johnlim@C206.com");
-	    assertFalse(userList.get(0).equals(u1));
-	  }
-	@Test
-	// ZANE TAN
-	public void testAddCategory() {
-		
-		//check if category list is not null but empty and can be added to 
-		assertNotNull("Check if there is a valid Category arraylist to add to ", CategoryList);
-		
-		// Given an empty list, after adding 1 new category, is the size of the list 1?
-		C206_CaseStudy.AddCategory(CategoryList, cat1);
-		assertEquals("Test if category arrayList size is 1?", 1, CategoryList.size());
-		// check if the object matches the added object index in the arraylist
-		assertSame("Check that cat1 is added", cat1, CategoryList.get(0));
-		
-	    //test that fields are not null for name 
-	       assertNotNull(cat1.getName());
-	   
-	    // Given an empty list, after adding 1 more  new category, is the size of the list 2?
-	       C206_CaseStudy.AddCategory(CategoryList, cat2);
-	       assertEquals("Test if category arraylist size is 2", 2, CategoryList.size());
-	       assertSame("Test that cat2 is added", cat2, CategoryList.get(1));
-		
-		// test that error message is submitted if empty fields is submitted
-		// Test that a successful message will be displayed after adding category successfully.
-	}
-		
-	@Test
-	public void testRetrieveAllCategory() 
+	String name = Helper.readString("Enter Name > ");
+	while (name.isEmpty() || notExist(userList, name) == false) 
 	{
-		// Test if categorylist is not null but empty -boundary
-		assertNotNull("Test if there is valid category arraylist to retrieve item from", CategoryList);
-				
-		//test if the list of category retrieved from the case study file is empty - boundary
-		String allCategories= C206_CaseStudy.retrieveAllCategory(CategoryList);
-		String testOutput = "";
-		assertEquals("Check that category arraylist ", testOutput, allCategories);
-	
-				
-		//Given an empty list, after adding 2 items, test if the size of the list is 2 - normal
-	    C206_CaseStudy.AddCategory(CategoryList, cat1);
-	    C206_CaseStudy.AddCategory(CategoryList, cat2);
-		assertEquals("Test that Category arraylist size is 2", 2, CategoryList.size());
-				
-		//test if the expected output string same as the list of category retrieved from the case study file
-		allCategories = C206_CaseStudy.retrieveAllCategory(CategoryList);
-		testOutput = String.format("%-10s \n","Sports");
-		testOutput += String.format("%-10s \n","Baking");
-		System.out.println(allCategories); // to check whether it has been added 
-		
-		// check if the objects aded inside are similar to the objects in test output
-		assertEquals("Check the objects inside the category list", testOutput, allCategories);
-		
+		User.empty();
+		System.out.println("Name already exists! \nPlease choose another name.");
+		name = Helper.readString("Enter Name > ");
 	}
-	@Test
-        public void testDeleteCategory() {
-		// Test that the list is not null so that there is something for us to delete
-    		assertNotNull("Test that the list is not null so that there is something for us to delete from", CategoryList);
-    		C206_CaseStudy.AddCategory(CategoryList, cat1);
-   	    	C206_CaseStudy.AddCategory(CategoryList, cat2);
-   	    	assertEquals("Test that Category arraylist size is 2", 2, CategoryList.size());
-   	    	assertSame("check that cat1 is added",cat1,CategoryList.get(0)); // check the size
-		// Test that after deleting 1 category(sports), the size of the array is 0
-    	    	C206_CaseStudy.removeCategory(CategoryList, cat1.getName());
-	    	assertEquals("Check that Category arraylist size is 1", 1, CategoryList.size());
-	   // Test that a successful message will be displayed after deleting successfully.
-	 	
-	}
-	@Test 
-	public void testUpdateCategory()
+
+	String email = Helper.readString("Enter Email > ");
+	while (email.isEmpty() || User.isValidEmail(email) == false) 
 	{
-		// Test that the list is not null 
-    		assertNotNull("Test that the list is not null so that there is something for us to update from", CategoryList);
-    		C206_CaseStudy.AddCategory(CategoryList, cat1);
-   	   	 C206_CaseStudy.AddCategory(CategoryList, cat2);
-   	   	 assertEquals("Test that Category arraylist size is 2", 2, CategoryList.size());
-   	    
-   	    	String testupdate = C206_CaseStudy.updateCategory(CategoryList,"Books", cat1.getName()); //upName//name // books is test data 
-   	    	String testOutput = "Successfully updated category name"; // passing criteria
-   	    	assertEquals(testupdate,testOutput); 
-   	    	System.out.println(testupdate); // if successfully updated
-   	    
-   	    	assertEquals(cat1.getName(),"Books"); // string // string
-   	    
-   	   
-    	
+		User.empty();
+		System.out.println("Email must contain '@' and '.com'!");
+		email = Helper.readString("Enter Email > ");
 	}
-	@Test 
-	public void testSearchbyPartial()
+	String password = Helper.readString("Enter Password > ");
+	while (password.isEmpty() || User.isAlphaNumeric(password) == false) 
 	{
-		// Test that the list is not null so that there is something for us to delete
-    	    assertNotNull("Test that the list is not null so that there is something for us to search from", CategoryList);
-    	    C206_CaseStudy.AddCategory(CategoryList, cat1);
-   	    C206_CaseStudy.AddCategory(CategoryList, cat2);
-   	    assertEquals("Test that Category arraylist size is 2", 2, CategoryList.size());
-   	    
-   	    ArrayList<category> filterTest = C206_CaseStudy.searchCategory(CategoryList, "Spo"); // store the search data for cat 1
-   	    String testOutput = cat1.getName(); // for comparing later
-   	    assertEquals(testOutput, filterTest.get(0).getName()); // if the test output equals to the name searched // contains function
-		
+		User.empty();
+		System.out.println("Password must be alpha-numeric and \ncontain at least 8 characters.");
+		password = Helper.readString("Enter Password > ");
 	}
-	
-	@Test 
-	// YIN MINN
-	  public void testAddItem()
+
+	String role = Helper.readString("Enter Role > ");
+	while (role.isEmpty() || User.isValidRole(role) == false) 
 	{
-	    // Item list is not null, so that can add a new item
-	    assertNotNull("Test if there is valid item arraylist to add to", itemList);
-
-	    // Given an empty item list, after add one item, the size of the list is 1.
-	    C206_CaseStudy.addItem(itemList, item1);    
-	    assertEquals("Test if that item arraylist size is 1?", 1, itemList.size());
-
-	    // The item just added is as same as the first item of the list
-	    assertSame("Test that  is added same as 1st item of the list?", item1, itemList.get(0));
-	    
-	    // Test that the field submitted is not null.
-	    assertNotNull(item1.getName());
-	    assertNotNull(item1.getDescription());
-	    assertNotNull(item1.getMinimumBidPrice());
-	    assertNotNull(item1.getAuctionStartDate());
-	    assertNotNull(item1.getAuctionEndDate());
-	    assertNotNull(item1.getBidIncrement());
-	    
-	    // Given an empty item list, after add one item, the size of the list is 1.
-	    C206_CaseStudy.addItem(itemList, item2);    
-	    assertEquals("Test if that item arraylist size is 2?", 2, itemList.size());
-	    // The item just added is as same as the second item of the list
-	    assertSame("Test that  is added same as 1st item of the list?", item2, itemList.get(1));    
-	        
-	    // Test that an error message will be displayed after submitting if there are empty fields.
-	    // Test that a successful message will be displayed after submitting, if there are no empty fields.
+		User.empty();
+		System.out.println("Role can only be \nAdmin / Seller / Buyer");
+		role = Helper.readString("Enter Role > ");
 	}
-	@Test
-	public void testRetrieveAllItems()
+	User newUser = new User(name, email, password, role);
+	return newUser;
+}
+public static void addUser(ArrayList<User> userList, User newUser)
+{
+	userList.add(newUser);
+	System.out.println("User added.");
+}
+//====================================================================== VIEW ALL USERS =================================================================================
+public static String retrieveAllUsers(ArrayList<User> userList)
+{
+	String output = "";
+
+	for(int e = 0; e < userList.size(); e++)
 	{
-	    // Test if Item list is not null, so can be displayed
-	    assertNotNull("Test if there is valid item arraylist to be displayed", itemList);
-
-	    // Test if the list of items retrieved from the list is empty
-	    String allItems = C206_CaseStudy.retrieveAllItems(itemList);
-	    String testOutput = "";
-	    assertEquals(testOutput, allItems);
-	    
-	    // Given an empty list, after adding 2 items, test if the size of the list is 2
-	    C206_CaseStudy.addItem(itemList, item1);
-	    C206_CaseStudy.addItem(itemList, item2);
-	    assertEquals("Test if that item arraylist size is 2?", 2, itemList.size());
-
-	    // Test if the expected output string same as the list of items retrieved from the itemList.
-	    allItems = C206_CaseStudy.retrieveAllItems(itemList);
-	    testOutput = String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n", "Sony Laptop", "Sony Inspiron13", 100, "2021-08-03", "2021-08-04", 1);
-	    testOutput += String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n", "Dell Laptop", "Dell Inspiron14", 150, "2021-08-05", "2021-08-06", 1);
-	    
-	    //Check if the item added is same as the items in testOutput
-	    assertEquals(testOutput, allItems);
+		output += String.format("%-10s %-20s %-10s\n", userList.get(e).getName(), userList.get(e).getEmail(), userList.get(e).getRole());
 	}
-	@Test
-	// SHAO CHUN 
-	public void testDeleteItem() 
+	return output;
+}
+
+public static void viewAllUsers(ArrayList<User> userList)
+{
+	C206_CaseStudy.setHeader("==================== USERS LIST ====================");
+	String output = String.format("%-10s %-20s %-10s\n", "NAME", "EMAIL", "ROLE");
+	output += retrieveAllUsers(userList);
+	System.out.println(output);
+}
+//======================================================================= DELETE USER ===================================================================================
+public static String deleteUser(ArrayList<User> userList, String email) {
+	boolean exists = false;
+	String output = "";
+	for (int i = 0; i < userList.size(); i ++) 
 	{
-	    // Test that the list is not null so that there is something for us to delete
-	    assertNotNull("Test that the list is not null so that there is something for us to delete", itemList);
-	    
-	    C206_CaseStudy.addItem(itemList, item1);
-	    C206_CaseStudy.addItem(itemList, item2);
-	      
-	    //test that list size is 2 after adding
-	    assertEquals("Test that itemList size is 2",2, itemList.size());
-	    
-	    //Test that fields are not null for name
-	    assertNotNull(item1.getName());
-	    
-	    //before deletion, check if the index O is item 0 is indeed item 1
-	    assertTrue(itemList.get(0).equals(item1));
-	    
-	    //delete item1
-	    C206_CaseStudy.deleteItem(itemList, item1.getName());
-	    
-	    //after deletion , check item1 has been deleted
-	    assertFalse(itemList.get(0).equals(item1));
-	    
-	    assertEquals("Test that itemList size is 1", 1, itemList.size());
-	    // Test that a successful message will be displayed after deleting successfully.
-	    // Test that the list will be removed from the item list.
+		if (userList.get(i).getEmail().equalsIgnoreCase(email)) 
+		{
+			String confirm = Helper.readString("Confirm Delete User: " + email + "? (Yes/No) > ");
+			if (confirm.equalsIgnoreCase("Yes")) 
+			{
+				userList.remove(i);
+				output = "You have successfully deleted User: " + email;
+				System.out.println(output);
+			}
+			else if (confirm.equalsIgnoreCase("No")) 
+			{
+				output = "You have cancelled deletion of User: " + email;
+				System.out.println(output);
+			}
+			else 
+			{
+				output = "Please enter a valid email";
+				System.out.println(output);
+			}
+			exists = true;
+		}
 	}
-	@Test
-	public void testViewDeal()
+
+	if (exists != true) 
 	{
-	   assertNotNull("Test if the deal list is not empty", dealList);
-	
-	   String allDeal = C206_CaseStudy.retrieveAllDeal(dealList);
-	   String Output = "";
-	   assertEquals("Check that ViewAllDeals", Output, allDeal);
-	
-	   C206_CaseStudy.addNewDeal(dealList, deal1);
-	   C206_CaseStudy.addNewDeal(dealList, deal2);
-	   assertEquals("Test if that deal arraylist size is 2?", 2, dealList.size());
-	
-	   String alldeal = C206_CaseStudy.retrieveAllDeal(dealList);
-	   Output = String.format("%-10s %-25s %-20s %-20s %-20.2f %s\n", 1, "Rose Quartz Crystal", "seller1@mail.com", "buyer1@mail.com", 4.90, "01/01/2021");
-	   Output += String.format("%-10s %-25s %-20s %-20s %-20.2f %s\n",2, "MoonStone Bracelet", "seller2@mail.com", "buyer2@mail.com", 10.80, "02/02/2021");
-	   assertEquals(Output, alldeal);
+		output = "Email " + email + " does not exist!";
+		System.out.println(output);
 	}
-	@Test
-	public void testAddDeal() 
+	return output;
+}
+
+public static void doDeleteUser(ArrayList<User> userList, String email)
+{
+	boolean isDeleted = false;
+
+	if(email.isEmpty())
 	{
+		System.out.println("Field is empty");
+	}
+	else 
+	{
+		for(int i = 0; i < userList.size(); i++)
+		{
+			if(userList.get(i).getEmail().equalsIgnoreCase(email))
+			{
+				System.out.println("User (" + email + ") has been deleted !");
+				userList.remove(i);
+				isDeleted = true;
+				break;
+			}
 
-	  assertNotNull("Test if there is valid deal arraylist to add to", dealList);
-
-	  C206_CaseStudy.addNewDeal(dealList, deal1);
-	  assertEquals("Test if that deal arraylist size is 1?", 1, dealList.size());
-
-	  assertSame("Test that deal is added same as 1st item of the list?", deal1, dealList.get(0));
-
-	  assertNotNull(deal1.getPrice());
-	  assertNotNull(deal1.getBuyerEmail());
-	  assertNotNull(deal1.getName());
-	  assertNotNull(deal1.getSellerEmail());
+		}
 
 	}
-	@Test
-	public void testDeleteDeal() {
-	assertNotNull("Test that the list is not null so that there is something for us to delete", dealList);
-
-	 C206_CaseStudy.deleteDeal(dealList, deal1.getId());
-	assertEquals(0, dealList.size());
+	if(isDeleted == false)
+	{
+		System.out.println("There is no such user email.");
 	}
-	
+}
+//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// ZANE TAN (CATEGORY)
+// input category function
+public static category inputCategory() 
+{
+
+	String Name = Helper.readString("Enter Name of category (no numbers or special characters) >> ");
+
+	category newCat = new category(Name);
+
+	return newCat;
+}
+public static void AddCategory(ArrayList<category> CategoryList , category newCat) 
+{
+	boolean addchecker = false;
+
+	if(newCat.getName().isEmpty())
+	{
+		System.out.println("Please enter all fields that are required");
+	}
+	else
+	{
+		for(int i = 0; i < CategoryList.size();i++)
+		{
+			if(CategoryList.get(i).getName().equalsIgnoreCase(newCat.getName()))
+			{
+				addchecker = true; // if there is duplicate name
+				System.out.println("Existing name found");
+				break;
+			}
+		}
+		if(addchecker == false) // if there isnt any duplicate name
+		{
+
+			CategoryList.add(newCat);
+			System.out.println("Category Name ( " + newCat.getName() + " ) is added."); // success message
 
 
-	@After
-	public void tearDown() throws Exception {
-		bid1 = null;
-		bid2 = null;
-		bidList = null;
+		}
+
+
+	}
+
+
+}
+
+public static void viewAllcategories(ArrayList<category> CategoryList) {
+
+	String output = String.format("%-10s \n", "CATEGORY NAME");
+
+	output += retrieveAllCategory(CategoryList);
+
+	System.out.println(output);
+}
+// retrieve categories
+public static String retrieveAllCategory(ArrayList<category> CategoryList) {
+	String output = "";
+
+	for(int i = 0; i < CategoryList.size();i++)
+	{
+		if(CategoryList.size() != 0)
+		{
+			output += String.format("%-10s \n", CategoryList.get(i).getName());
+		}
+		else
+		{
+			System.out.println("There are no categories in the list");
+		}
+	}
+	return output;
+
+}
+public static void removeCategory(ArrayList<category> CategoryList,String name) // the function for remove
+{	
+	for(int i = 0 ; i < CategoryList.size();i++)
+	{
+		if(CategoryList.get(i).getName().equals(name))
+		{
+			CategoryList.remove(i);
+			System.out.println("Category (" + name + ") has been deleted !");
+
+		}
 	}
 
 }
+public static String deleteCategory(ArrayList<category> CategoryList)
+{
+	boolean isExist = false;
+	String output = "";
+
+	String name = Helper.readString("Enter category name > ");
+
+	for(int i = 0; i < CategoryList.size();i++)
+	{
+		if(CategoryList.get(i).getName().equals(name))
+		{
+			char CatDelete = Helper.readChar("Are you sure that you want to delete this category  (Y/N) > ");
+
+			if(CatDelete == 'Y' || CatDelete == 'y')
+			{
+				removeCategory(CategoryList,name); // calling the function
+
+			}
+			else if(CatDelete == 'N' || CatDelete == 'n')
+			{
+				output += "You have cancelled the deletion of category ( " + name + " )";
+				System.out.println(output);
+			}
+			isExist = true;
+		}
+	}
+	if(isExist != true)
+	{
+		output = "Category ( " + name + ")  is not found";
+		System.out.println(output);
+	}
+	return name;
+}
+public static String updateCategory(ArrayList<category> CategoryList, String UpName,String name)
+{
+	String output = "";
+	if(UpName.isEmpty())
+	{
+		output = "Please fill in the empty update name field";
+	}
+	else
+	{
+		for(int i = 0 ; i < CategoryList.size();i++)
+		{
+			if(CategoryList.get(i).getName().equalsIgnoreCase(name))
+			{
+				CategoryList.get(i).setName(UpName);
+				output = "Successfully updated category name";
+				break;
+
+			}
+		}
+	}
+	return output;
+}
+public static ArrayList<category> searchCategory(ArrayList<category> CategoryList, String name) // returning arraylist
+{
+	ArrayList<category> filteredSearch = new ArrayList<category>();
+
+	if(name.isEmpty())
+	{
+		System.out.println("Please fill in all the fields");
+	}
+	else
+	{
+		for(int i = 0 ; i < CategoryList.size();i++)
+		{
+			if(CategoryList.get(i).getName().toUpperCase().contains(name.toUpperCase()))
+			{
+				filteredSearch.add(CategoryList.get(i));
+				System.out.println("Category filtered by partial/full name ( " + name + " )");
+			}
+
+		}
+	}
+	return filteredSearch;
+
+}
+
+
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//YIN MINN (ITEM)
+//Input item
+public static Item inputItem() {    
+	String name = Helper.readString("Enter an item name: ");
+	String description = Helper.readString("Enter description: ");
+	Integer minimumBidPrice = Helper.readInt("Enter minimum bid price: ");
+	String auctionStartDate = Helper.readString("Enter auction start date(yyyy/mm/dd): ");
+	String auctionEndDate = Helper.readString("Enter auction end date(yyyy/mm/dd): ");
+	Integer bidIncrement = Helper.readInt("Enter bid increment: ");
+
+	Item newItem = new Item(name, description, minimumBidPrice, auctionStartDate, auctionEndDate, bidIncrement);
+	return newItem;
+}
+
+//Add item
+public static void addItem(ArrayList<Item> itemList, Item newItem) {
+
+	itemList.add(newItem);
+	System.out.println("Item added.");
+}
+//View items
+public static void viewAllItems(ArrayList<Item> itemList) 
+{
+
+	String output = String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n", "NAME", "DESCRIPTION", "MINIMUM BID PRICE", "AUCTION START DATE", "AUCTION END DATE", "BID INCREMENT");
+	output += retrieveAllItems(itemList);
+	System.out.println(output);
+}
+
+
+public static String retrieveAllItems(ArrayList<Item> itemList) {
+
+	String output = "";
+
+	for(int i = 0; i < itemList.size(); i++)
+	{
+		output += String.format("%-20s %-20s %-20s %-20s %-20s %-20s\n", itemList.get(i).getName(), itemList.get(i).getDescription(), itemList.get(i).getMinimumBidPrice(), itemList.get(i).getAuctionStartDate(), itemList.get(i).getAuctionEndDate(), itemList.get(i).getBidIncrement());
+	}
+	return output;
+
+}
+
+//Delete item
+public static void deleteItem(ArrayList<Item> itemList, String name) {
+
+	boolean isDeleted = false;
+
+	if(name.isEmpty()) {
+		System.out.println("Field is empty");
+	}
+	else {
+		for (int i = 0; i < itemList.size(); i++) {
+			if (itemList.get(i).getName().equalsIgnoreCase(name)) {
+
+				System.out.println(name + " has been deleted!");
+				itemList.remove(i);
+				isDeleted = true;
+				break;
+			}
+		}
+	}
+	if (isDeleted == false) {
+
+		System.out.println("The item name does not exist.");
+	}
+}
+//--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// REGAN (BIDDING)
+//=========================================================== VIEW =============================================================
+public static String retrieveAllBid(ArrayList<Bid> bidList) {
+	String output = "";
+
+	for (int i = 0; i < bidList.size(); i++) {
+		output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
+	}
+	return output;
+}
+public static void viewAllBids(ArrayList<Bid> bidList) {
+	C206_CaseStudy.setHeader("VIEW ALL BIDS");
+	String output = "";
+	if (bidList.isEmpty()) {
+		output = "You have no existing bids at the moment.";
+	}
+	else {
+		output = String.format("%-10s %-25s %-20s %-20s %-10s\n", "BID ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "BID PRICE");
+		output += retrieveAllBid(bidList);
+	}
+	System.out.println(output);
+}
+
+//=========================================================== ADD =============================================================
+public static Bid inputBid(ArrayList<Bid> bidList) {
+	C206_CaseStudy.setHeader("ADD BID");
+	int bidID = bidList.size() + 1;
+	String itemName = Helper.readString("Enter Item Name > ");
+	while (itemName.isEmpty()) {
+		Bid.emptyFields();
+		itemName = Helper.readString("Enter Item Name > ");
+	}
+	String sellerEmail = Helper.readString("Enter Seller Email > ");
+	while (sellerEmail.isEmpty()) {
+		Bid.emptyFields();
+		sellerEmail = Helper.readString("Enter Seller Email > ");
+	}
+	// check seller email validation.
+	String pattern = "^(.+)@(.+)$";
+	boolean matched = Pattern.matches(pattern, sellerEmail);
+	while (matched != true) {
+		System.out.println("Invalid email entered.");
+		sellerEmail = Helper.readString("Enter Seller Email > ");
+		matched = Pattern.matches(pattern, sellerEmail);
+	}
+	String buyerEmail = Helper.readString("Enter Buyer Email > ");
+	while (buyerEmail.isEmpty()) {
+		Bid.emptyFields();
+		buyerEmail = Helper.readString("Enter Buyer Email > ");
+	}
+	// check buyer email validation.
+	matched = Pattern.matches(pattern, buyerEmail);
+	while (matched != true) {
+		System.out.println("Invalid email entered.");
+		buyerEmail = Helper.readString("Enter Buyer Email > ");
+		matched = Pattern.matches(pattern, buyerEmail);
+	}
+	double price = Helper.readDouble("Enter Item Price > ");
+	while (price == 0) {
+		Bid.emptyFields();
+		price = Helper.readDouble("Enter Item Price > ");
+	}
+	// create object
+	Bid newBid = new Bid(bidID, itemName, sellerEmail, buyerEmail, price);
+	return newBid;
+}
+
+public static void addNewBid(ArrayList<Bid> bidList, Bid newBid) {
+	// add object into arrayList.
+	bidList.add(newBid);
+	System.out.println("Congratulations! You have successfully bid the item!");
+}
+
+//=========================================================== DELETE ===========================================================
+public static int deleteMyBid(ArrayList<Bid> bidList) {
+	C206_CaseStudy.setHeader("DELETE MY BID");
+	String output = "";
+	boolean found = false;
+	int bidID = Helper.readInt("Enter Bid ID > ");
+
+	for (int i = 0; i < bidList.size(); i ++) {
+		if (bidID == bidList.get(i).getBidID()) {
+			char confirm = Helper.readChar("Are you sure that you want to delete Bid ID " + bidID + "? (Y/N) > ");
+			if (confirm == 'Y' || confirm == 'y') {
+				removeBid(bidList, bidID);
+				//bidList.get(i).setDeleted(true);
+			}
+			else if (confirm == 'N' || confirm == 'n') {
+				output = "You have cancelled the delete transaction for Bid ID " + bidID;
+				System.out.println(output);
+				//bidList.get(i).setDeleted(false);
+			}
+			else {
+				output = "Please enter valid values.";
+				System.out.println(output);
+				//bidList.get(i).setDeleted(false);
+			}
+			found = true;
+		}
+	}
+
+	if (found != true) {
+		output = String.format("Bid ID %d is not found.", bidID);
+		System.out.println(output);
+	}
+	return bidID;
+}
+
+public static void removeBid(ArrayList<Bid> bidList, int bidID) {
+	int index = bidID - 1;
+	bidList.remove(index);
+	String output = "You have successfully deleted Bid ID " + bidID;
+	System.out.println(output);
+}
+
+//=========================================================== UPDATE ===========================================================
+public static int updateMyBid (ArrayList<Bid> bidList) {
+	C206_CaseStudy.setHeader("UPDATE MY BID");
+	int bidID = Helper.readInt("Enter Bid ID > ");
+	boolean found = false;
+	String output = "";
+
+	for (int i = 0; i < bidList.size(); i ++) {
+		if (bidID == bidList.get(i).getBidID()) {
+			String itemName = bidList.get(i).getItemName();
+			String sellerEmail = bidList.get(i).getSellerEmail();
+			String buyerEmail = bidList.get(i).getBuyerEmail();
+			double price = bidList.get(i).getBidPrice();
+			output = "Item name > " + itemName + "\nSeller email > " + sellerEmail + "\nBuyer email > " + buyerEmail + "\nCURRENT bid price: " + price;
+			System.out.println(output);
+
+			char confirm = Helper.readChar("Are you sure that you want to update Bid ID " + bidID + "? (Y/N) > ");
+			if (confirm == 'y' || confirm == 'Y') {
+				double newPrice = Helper.readDouble("Enter NEW bid Price > ");
+				while (newPrice == 0) {
+					output = "Please enter a valid bid price.";
+					System.out.println(output);
+					newPrice = Helper.readDouble("Enter NEW bid Price > ");
+				}
+				if (newPrice <= price) {
+					output = "Buyer cannot set price lower than or equal to the current bid price.";
+					System.out.println(output);
+				}
+				else {
+					updateBid(bidList, bidID, newPrice);
+				}
+			}
+			else if (confirm == 'N' || confirm == 'n') {
+				output = "You have cancelled the update transaction for Bid ID " + bidID;
+				System.out.println(output);
+			}
+			else {
+				output = "Please enter valid values.";
+				System.out.println(output);
+			}
+			found = true;
+		}
+	}
+
+	if (found != true) {
+		output = String.format("Bid ID %d is not found.", bidID);
+		System.out.println(output);
+	}
+
+	return bidID;
+}
+
+public static void updateBid(ArrayList<Bid> bidList, int bidID, double newPrice) {
+	int index = bidID - 1;
+	bidList.get(index).setBidPrice(newPrice);
+	String output = "You have successfully updated Bid ID " + bidID;
+	System.out.println(output);
+}
+
+//=========================================================== SEARCH ===========================================================
+public static String searchAllBid(ArrayList<Bid> bidList) {
+	String output = "";
+	boolean found = false;
+	searchMenu();
+	int option = Helper.readInt("Enter > ");
+	if (option == 1) {
+		String itemName = Helper.readString("Enter Item Name: ");
+		while (itemName == "") {
+			System.out.println("Please do not submit empty fields.");
+			itemName = Helper.readString("Enter Item Name: ");
+		}
+		for (int i = 0; i < bidList.size(); i++) {
+			String itemN = itemName.toLowerCase();
+			String stored = bidList.get(i).getItemName().toLowerCase();
+			if (stored.contains(itemN)) {
+				output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
+				found = true;
+			}
+		}
+	}
+	else if (option == 2) {
+		String sellerE = Helper.readString("Enter Seller Email: ");
+		while (sellerE == "") {
+			System.out.println("Please do not submit empty fields.");
+			sellerE = Helper.readString("Enter Item Name: ");
+		}
+		for (int i = 0; i < bidList.size(); i++) {
+			String sellerMail = sellerE.toLowerCase();
+			String stored = bidList.get(i).getSellerEmail().toLowerCase();
+			if (stored.contains(sellerMail)) {
+				output += String.format("%-10s %-25s %-20s %-20s %.2f\n", bidList.get(i).getBidID(), bidList.get(i).getItemName(), bidList.get(i).getSellerEmail(), bidList.get(i).getBuyerEmail(), bidList.get(i).getBidPrice());
+				found = true;
+			}
+		}
+	}
+	else {
+		output = "Invalid option entered.";
+	}
+	if (found == false) {
+		output = "No result found.";
+	}
+	return output;
+}
+
+public static void searchBids(ArrayList<Bid> bidList) {
+	C206_CaseStudy.setHeader("SEARCH MY BIDS");
+	String output = "";
+	if (bidList.isEmpty()) {
+		output = "You have no existing bids at the moment.";
+	}
+	else {
+		output = String.format("%-10s %-25s %-20s %-20s %-10s\n", "BID ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "BID PRICE");
+		output += searchAllBid(bidList);
+	}
+	System.out.println(output);
+}
+
+public static void searchMenu() {
+	System.out.println("DO YOU WANT TO SEARCH BY...");
+	System.out.println("1. ITEM NAME");
+	System.out.println("2. SELLER EMAIL");
+}
+
+// ********************************************************** SELLER ************************************************************
+
+//=========================================================== VIEW ===========================================================
+public static String retrieveAllSellerBid(ArrayList<Bid> sbidList) {
+	String output = "";
+
+	for (int i = 0; i < sbidList.size(); i++) {
+		output += String.format("%-10s %-25s %-20s %-20s %-20.2f %s\n", sbidList.get(i).getBidID(), sbidList.get(i).getItemName(), sbidList.get(i).getSellerEmail(), sbidList.get(i).getBuyerEmail(), sbidList.get(i).getBidPrice(), sbidList.get(i).getStatus());
+	}
+	return output;
+}
+public static void viewAllSellerBids(ArrayList<Bid> sbidList) {
+	C206_CaseStudy.setHeader("VIEW ALL BUYER'S BIDS");
+	String output = "";
+	if (sbidList.isEmpty()) {
+		output = "You have no existing bids at the moment.";
+	}
+	else {
+		output = String.format("%-10s %-25s %-20s %-20s %-20s %s\n", "BID ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "BID PRICE", "STATUS");
+		output += retrieveAllSellerBid(sbidList);
+	}
+	System.out.println(output);
+}
+
+
+//======================================================== UPDATE CANCEL ===========================================================
+public static int updateCancelBid (ArrayList<Bid> sbidList) {
+	C206_CaseStudy.setHeader("UPDATE MY BID");
+	int bidID = Helper.readInt("Enter Bid ID > ");
+	boolean found = false;
+	String output = "";
+	for (int i = 0; i < sbidList.size(); i ++) {
+		if (bidID == sbidList.get(i).getBidID()) {
+			String itemName = sbidList.get(i).getItemName();
+			String sellerEmail = sbidList.get(i).getSellerEmail();
+			String buyerEmail = sbidList.get(i).getBuyerEmail();
+			double price = sbidList.get(i).getBidPrice();
+			output = "Item name > " + itemName + "\nSeller email > " + sellerEmail + "\nBuyer email > " + buyerEmail + "\nCURRENT bid price: " + price;
+			System.out.println(output);
+
+			char confirm = Helper.readChar("Are you sure that you want to cancel Bid ID " + bidID + "? (Y/N) > ");
+			if (confirm == 'y' || confirm == 'Y') {
+				cancelBid(sbidList, bidID);
+			}
+			else if (confirm == 'N' || confirm == 'n') {
+				output = "You have cancelled the cancel transaction for Bid ID " + bidID;
+				System.out.println(output);
+			}
+			else {
+				output = "Please enter valid values.";
+				System.out.println(output);
+			}
+			found = true;
+		}
+	}
+
+	if (found != true) {
+		output = String.format("Bid ID %d is not found.", bidID);
+		System.out.println(output);
+	}
+
+	return bidID;
+}
+
+public static void cancelBid(ArrayList<Bid> sbidList, int bidID) {
+	int index = bidID - 1;
+	sbidList.get(index).setStatus("CANCELLED");
+	System.out.println("You have successfully cancelled Bid ID " + bidID);
+}
+
+//=========================================================== SELLER LOGIN ===========================================================
+public static boolean doSellerLogin(String userName, String userPassword, ArrayList<UserBid> sellerList)  {
+	boolean valid = false;
+	for (int i = 0; i < sellerList.size(); i ++) {
+		if (userName.equalsIgnoreCase(sellerList.get(i).getName()) && userPassword.equalsIgnoreCase(sellerList.get(i).getPassword())) {
+			valid = true;
+		}
+		else {
+			valid = false;
+		}
+	}
+	return valid;
+}
+
+//=========================================================== BUYER LOGIN ===========================================================
+public static boolean doBuyerLogin(String userName, String userPassword, ArrayList<UserBid> buyerList) {
+	boolean valid = false;
+	for (int i = 0; i < buyerList.size(); i ++) {
+		if (userName.equalsIgnoreCase(buyerList.get(i).getName()) && userPassword.equalsIgnoreCase(buyerList.get(i).getPassword())) {
+			valid = true;
+		}
+		else {
+			valid = false;
+		}
+	}
+	return valid;
+}
+
+//=========================================================== LOGIN MENU ===========================================================
+public static void loginMenu() {
+	Helper.line(30, "-");
+	System.out.println("WELCOME");
+	Helper.line(30, "-");
+	System.out.println("1. LOGIN");
+	System.out.println("2. REGISTER");
+}
+
+// --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+// SHAOCHUN (DEAL)
+public static String retrieveAllDeal(ArrayList<Deal> dealList) {
+	String output = "";
+
+	for (int i = 0; i < dealList.size(); i++) {
+		output += String.format("%-10s %-25s %-20s %-20s %-20.2f %s\n", dealList.get(i).getId(), dealList.get(i).getName(), dealList.get(i).getSellerEmail(), dealList.get(i).getBuyerEmail(), dealList.get(i).getPrice(), dealList.get(i).getClosing());
+	}
+	return output;
+}
+public static void viewAllDeals(ArrayList<Deal> dealList) {
+	C206_CaseStudy.setHeader("VIEW ALL DEALS");
+	String output = "";
+	if (dealList.isEmpty()) {
+		output = "You have no existing deals at the moment.";
+	}
+	else {
+		output = String.format("%-10s %-25s %-20s %-20s %-20s %s\n", "DEAL ID", "ITEM NAME", "SELLER EMAIL", "BUYER EMAIL", "TRANSACTION PRICE", "CLOSING DATE");
+		output += retrieveAllDeal(dealList);
+	}
+	System.out.println(output);
+}
+
+// ADD
+public static Deal inputDeal(ArrayList<Deal> dealList) {
+	C206_CaseStudy.setHeader("ADD DEAL");
+	int dealID = dealList.size() + 1;
+	String itemName = Helper.readString("Enter Item Name > ");
+	while (itemName.isEmpty()) {
+		Deal.emptyFields();
+		itemName = Helper.readString("Enter Item Name > ");
+	}
+	String sellerEmail = Helper.readString("Enter Seller Email > ");
+	while (sellerEmail.isEmpty()) {
+		Deal.emptyFields();
+		sellerEmail = Helper.readString("Enter Seller Email > ");
+	}
+	String buyerEmail = Helper.readString("Enter Buyer Email > ");
+	while (buyerEmail.isEmpty()) {
+		Deal.emptyFields();
+		buyerEmail = Helper.readString("Enter Buyer Email > ");
+	}
+	double price = Helper.readDouble("Enter Item Price > ");
+	while (price == 0) {
+		Deal.emptyFields();
+		price = Helper.readDouble("Enter Item Price > ");
+	}
+	String closing = Helper.readString("Enter Closing Date > ");
+	while (closing.isEmpty()) {
+		Deal.emptyFields();
+		closing = Helper.readString("Enter Buyer Email > ");
+	}
+	// create object
+	Deal newDeal = new Deal(dealID, itemName, sellerEmail, buyerEmail, price, closing);
+	return newDeal;
+}
+public static void addNewDeal(ArrayList<Deal> dealList, Deal newDeal) {
+	// add object into arrayList.
+	dealList.add(newDeal);
+	System.out.println("Congratulations! You have successfully add deal!");
+}
+
+// DELETE
+public static int removeDeal(ArrayList<Deal> dealList) {
+	C206_CaseStudy.setHeader("DELETE DEAL");
+	int dealID = Helper.readInt("Enter DEAL ID > ");
+	return dealID;
+}
+
+public static String deleteDeal(ArrayList<Deal> dealList, int dealID)
+{
+	boolean found = false;
+	String output = "";
+	for (int i = 0; i < dealList.size(); i ++) {
+		if (dealID == dealList.get(i).getId()) {
+			int index = i + 1;
+			char confirm = Helper.readChar("Are you sure that you want to delete Deal ID " + index + "? (Y/N) > ");
+			if (confirm == 'Y' || confirm == 'y') {
+				dealList.remove(i);
+				output = "You have successfully deleted Deal ID " + index;
+				System.out.println(output);
+			}
+			else if (confirm == 'N' || confirm == 'n') {
+				output = "You have cancelled the delete transaction for Deal ID " + index;
+				System.out.println(output);
+			}
+			else {
+				output = "Please enter valid values.";
+				System.out.println(output);
+			}
+			found = true;
+		}
+	}
+
+	if (found != true) {
+		output = String.format("Deal ID %d is not found.", dealID);
+		System.out.println(output);
+	}
+	return output;
+}	
+
+}
+
+
