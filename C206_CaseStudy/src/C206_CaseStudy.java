@@ -1100,6 +1100,7 @@ public static void updateBid(ArrayList<Bid> bidList, int bidID, double newPrice)
 
 //=========================================================== SEARCH ===========================================================
 	public static int searchAllBid(ArrayList<Bid> bidList) {
+		C206_CaseStudy.setHeader("SEARCH MY BID");
 		boolean found = false;
 		searchMenu();
 		int i = 0;
