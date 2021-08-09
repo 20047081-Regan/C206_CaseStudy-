@@ -792,6 +792,12 @@ public static String deleteCategory(ArrayList<category> CategoryList)
 				output += "You have cancelled the deletion of category ( " + name + " )";
 				System.out.println(output);
 			}
+			else
+			{
+				output += "invalid confirmation choice";
+				System.out.println(output);
+					
+			}
 			isExist = true;
 		}
 	}
